@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Audio Mixer for macOS</title>
-<meta name="description" content="A macOS menu bar audio mixer — per-app volume, 10-band & parametric EQ, AutoEQ headphone correction. No virtual audio driver required.">
+<meta name="description" content="메뉴 막대에 상주하는 macOS 오디오 믹서 — 앱별 볼륨, 10밴드·파라메트릭 EQ, AutoEQ 헤드폰 보정. 가상 드라이버 설치 없이 동작합니다.">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,16 +152,16 @@
   <div class="wrap">
     <a class="brand" href="#"><img src="icon.png" alt="">Audio Mixer</a>
     <div class="links">
-      <a href="#features" data-i18n="nav_features">Features</a>
-      <a href="#install" data-i18n="nav_install">Install</a>
+      <a href="#features" data-i18n="nav_features">기능</a>
+      <a href="#install" data-i18n="nav_install">설치</a>
       <a href="#faq">FAQ</a>
       <a class="gh" data-repo="" href="#">GitHub ↗</a>
     </div>
     <label class="lang">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
       <select id="lang" aria-label="Language">
-        <option value="en">English</option>
         <option value="ko">한국어</option>
+        <option value="en">English</option>
         <option value="zh">简体中文</option>
         <option value="ja">日本語</option>
       </select>
@@ -172,37 +172,37 @@
 <header class="hero">
   <div class="wrap">
     <div>
-      <img class="hero-icon" src="icon.png" alt="Audio Mixer icon" data-i18n-alt="icon_alt">
-      <h1 data-i18n="hero_h1">Every app at its own volume,<br><span class="g">right from the menu bar.</span></h1>
-      <p data-i18n="hero_lead" class="lead">An audio mixer that lives in the macOS menu bar. Per-app volume, a 10-band and parametric equalizer, and AutoEQ headphone correction — all without installing a virtual audio driver.</p>
+      <img class="hero-icon" src="icon.png" alt="Audio Mixer 아이콘" data-i18n-alt="icon_alt">
+      <h1 data-i18n="hero_h1">앱마다 다른 볼륨,<br><span class="g">메뉴 막대 한 곳에서.</span></h1>
+      <p data-i18n="hero_lead" class="lead">macOS 메뉴 막대에 상주하는 오디오 믹서입니다. 앱별 볼륨, 10밴드·파라메트릭 이퀄라이저, AutoEQ 헤드폰 보정까지 — 가상 오디오 드라이버 설치 없이 동작합니다.</p>
       <div class="cta">
         <a class="btn primary" data-repo="releases/latest/download/AudioMixer.zip" href="#">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
-          <span data-i18n="btn_download">Download Latest</span>
+          <span data-i18n="btn_download">최신 버전 다운로드</span>
         </a>
         <a class="btn" data-repo="releases" href="#">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-          <span data-i18n="btn_releases">All Versions · Changelog</span>
+          <span data-i18n="btn_releases">모든 버전 · 변경 내역</span>
         </a>
       </div>
-      <p data-i18n="req" class="req"><b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · Free</p>
+      <p data-i18n="req" class="req"><b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · 무료</p>
     </div>
 
-    <div class="mock" aria-label="App screen example" data-i18n-aria="mock_label">
+    <div class="mock" aria-label="앱 화면 예시" data-i18n-aria="mock_label">
       <div class="mock-top"><b>Audio Mixer</b><span class="switch"></span></div>
-      <div class="tabs"><span class="on" data-i18n="mock_tab1">Mixer</span><span data-i18n="mock_tab2">Equalizer</span><span data-i18n="mock_tab3">Settings</span></div>
+      <div class="tabs"><span class="on" data-i18n="mock_tab1">믹서</span><span data-i18n="mock_tab2">이퀄라이저</span><span data-i18n="mock_tab3">설정</span></div>
       <div class="card">
-        <h4 data-i18n="mock_out">Output · MacBook Pro Speakers</h4>
+        <h4 data-i18n="mock_out">출력 · MacBook Pro 스피커</h4>
         <div class="row"><span class="appdot" style="background:#2b2f5c"></span><div><div class="slider"><i style="width:72%"></i></div></div><span></span><span class="pct">72%</span></div>
       </div>
       <div class="card">
-        <h4 data-i18n="mock_apps">App Volume</h4>
+        <h4 data-i18n="mock_apps">앱별 볼륨</h4>
         <div class="row"><span class="appdot" style="background:#1db954"></span><div>Spotify<div class="meter"><i style="--w:78%"></i></div></div><div class="slider"><i style="width:85%"></i></div><span class="pct">85%</span></div>
         <div class="row"><span class="appdot" style="background:#ff4f4f"></span><div>Safari<div class="meter"><i style="--w:52%;animation-delay:.4s"></i></div></div><div class="slider"><i style="width:40%"></i></div><span class="pct">40%</span></div>
         <div class="row"><span class="appdot" style="background:#5b8cff"></span><div>Zoom<div class="meter"><i style="--w:64%;animation-delay:.8s"></i></div></div><div class="slider"><i style="width:100%"></i></div><span class="pct">100%</span></div>
       </div>
       <div class="card">
-        <h4 data-i18n="mock_eq">EQ · Harman-Style Bass</h4>
+        <h4 data-i18n="mock_eq">EQ · 하만 스타일 저음</h4>
         <svg class="eqsvg" viewBox="0 0 360 80" aria-hidden="true">
           <defs><linearGradient id="eqg" x1="0" x2="1"><stop offset="0" stop-color="#5fe1f2"/><stop offset=".55" stop-color="#8f7dff"/><stop offset="1" stop-color="#ff6fb6"/></linearGradient>
           <linearGradient id="eqf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f7dff" stop-opacity=".35"/><stop offset="1" stop-color="#8f7dff" stop-opacity="0"/></linearGradient></defs>
@@ -218,39 +218,39 @@
 <section id="features">
   <div class="wrap">
     <div class="eyebrow">Features</div>
-    <h2 data-i18n="feat_h2">Everything you need. No driver to install.</h2>
-    <p data-i18n="feat_sub" class="sub">Uses only the audio features built into macOS. No need to install virtual audio devices like BlackHole or Soundflower.</p>
+    <h2 data-i18n="feat_h2">필요한 건 다 있고, 설치할 드라이버는 없습니다</h2>
+    <p data-i18n="feat_sub" class="sub">macOS에 내장된 오디오 기능만 사용합니다. BlackHole·Soundflower 같은 가상 오디오 장치를 따로 설치할 필요가 없습니다.</p>
     <div class="grid">
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4v16M12 4v16M18 4v16"/><rect x="3.5" y="13" width="5" height="3" rx="1" fill="currentColor"/><rect x="9.5" y="7" width="5" height="3" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3" rx="1" fill="currentColor"/></svg></div>
-        <h3 data-i18n="f1_h">Per-App Volume</h3>
-        <p data-i18n="f1_p">Automatically finds apps that are playing sound and sets each one from 0–100% (up to 200% optionally). Mute, level meters, and per-app settings that are remembered.</p>
-        <ul><li data-i18n="f1_l1">Helper processes are grouped under their parent app</li><li data-i18n="f1_l2">Right-click to exclude an app from processing</li></ul>
+        <h3 data-i18n="f1_h">앱별 볼륨</h3>
+        <p data-i18n="f1_p">소리를 내는 앱을 자동으로 찾아 각각 0–100%(옵션 최대 200%)로 조절합니다. 음소거, 레벨 미터, 앱별 설정 기억까지.</p>
+        <ul><li data-i18n="f1_l1">헬퍼 프로세스는 상위 앱으로 묶어서 표시</li><li data-i18n="f1_l2">우클릭으로 특정 앱 처리 제외</li></ul>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg></div>
-        <h3 data-i18n="f2_h">Input & Output Devices</h3>
-        <p data-i18n="f2_p">Switch output and input devices, with hardware volume and mute. Devices without hardware volume, such as HDMI, get software volume instead.</p>
+        <h3 data-i18n="f2_h">입·출력 장치 제어</h3>
+        <p data-i18n="f2_p">출력·입력 장치 전환과 하드웨어 볼륨·음소거. HDMI처럼 하드웨어 볼륨이 없는 장치는 소프트웨어 볼륨으로 대신합니다.</p>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 14c3 0 3-6 6-6s3 9 6 9 3-6 8-6"/></svg></div>
-        <h3 data-i18n="f3_h">Graphic & Parametric EQ</h3>
-        <p data-i18n="f3_p">A 10-band graphic EQ (±12 dB) and up to 32 parametric filters (PK·LSC·HSC·LP·HP·NO). Edit by dragging while watching the frequency response curve.</p>
+        <h3 data-i18n="f3_h">그래픽 · 파라메트릭 EQ</h3>
+        <p data-i18n="f3_p">10밴드 그래픽 EQ(±12 dB)와 최대 32개 파라메트릭 필터(PK·LSC·HSC·LP·HP·NO). 주파수 응답 곡선을 보며 드래그로 편집합니다.</p>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></div>
-        <h3 data-i18n="f4_h">AutoEQ Headphone Correction</h3>
-        <p data-i18n="f4_p">Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly. Import/export ParametricEQ.txt.</p>
+        <h3 data-i18n="f4_h">AutoEQ 헤드폰 보정</h3>
+        <p data-i18n="f4_p">AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다. ParametricEQ.txt 가져오기/내보내기 지원.</p>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg></div>
-        <h3 data-i18n="f5_h">Presets & Per-Device Switching</h3>
-        <p data-i18n="f5_p">17 built-in presets plus your own. Plug in your earphones and the EQ assigned to that device is applied automatically.</p>
+        <h3 data-i18n="f5_h">프리셋 &amp; 장치별 자동 전환</h3>
+        <p data-i18n="f5_p">기본 프리셋 17종과 사용자 프리셋. 이어폰을 꽂으면 그 장치에 지정한 EQ로 자동 전환됩니다.</p>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
-        <h3 data-i18n="f6_h">Sound Protection</h3>
-        <p data-i18n="f6_p">An auto preamp that lowers the level by the amount of EQ boost, a peak limiter, hard-clip protection and L/R balance keep your sound from distorting.</p>
+        <h3 data-i18n="f6_h">음질 보호</h3>
+        <p data-i18n="f6_p">EQ 부스트만큼 자동으로 낮추는 프리앰프, 피크 리미터, 하드 클립 보호, L/R 밸런스로 소리가 깨지지 않게 지킵니다.</p>
       </div>
     </div>
   </div>
@@ -259,22 +259,22 @@
 <section id="how">
   <div class="wrap">
     <div class="eyebrow">How it works</div>
-    <h2 data-i18n="how_h2">How your sound flows</h2>
-    <p data-i18n="how_sub" class="sub">Audio Mixer processes each app's sound only while it's running. If you quit Audio Mixer — or it quits unexpectedly — every app's sound instantly goes back to normal.</p>
+    <h2 data-i18n="how_h2">소리가 지나가는 길</h2>
+    <p data-i18n="how_sub" class="sub">Audio Mixer가 실행 중일 때만 각 앱의 소리를 받아 처리합니다. Audio Mixer를 끄거나 비정상 종료돼도 모든 앱의 소리가 즉시 원래대로 돌아옵니다.</p>
     <div class="flow">
-      <div class="node"><b data-i18n="n1_b">App audio</b><span>Spotify, Safari …</span></div>
+      <div class="node"><b data-i18n="n1_b">앱 오디오</b><span>Spotify, Safari …</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b data-i18n="n2_b">Picked up by Audio Mixer</b><span data-i18n="n2_s">Original output waits</span></div>
+      <div class="node"><b data-i18n="n2_b">Audio Mixer가 받아서</b><span data-i18n="n2_s">원래 출력은 잠시 대기</span></div>
       <div class="arrow">→</div>
-      <div class="node hl"><b data-i18n="n3_b">Real-time processing</b><span data-i18n="n3_s">Volume · EQ · Limiter</span></div>
+      <div class="node hl"><b data-i18n="n3_b">실시간 처리</b><span data-i18n="n3_s">볼륨 · EQ · 리미터</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b data-i18n="n4_b">Output device</b><span data-i18n="n4_s">Speakers · Headphones</span></div>
+      <div class="node"><b data-i18n="n4_b">출력 장치</b><span data-i18n="n4_s">스피커 · 헤드폰</span></div>
     </div>
     <div class="points">
-      <div class="point"><b data-i18n="p1_b">Seamless sound</b><span data-i18n="p1_s">Near-zero-latency processing keeps music, video and calls sounding natural.</span></div>
-      <div class="point"><b data-i18n="p2_b">No clicks</b><span data-i18n="p2_s">Changing the EQ during playback transitions smoothly — no pops.</span></div>
-      <div class="point"><b data-i18n="p3_b">Self-healing</b><span data-i18n="p3_s">Reconnects on its own after you switch output devices or wake from sleep.</span></div>
-      <div class="point"><b data-i18n="p4_b">Never records</b><span data-i18n="p4_s">Audio is only processed in real time — never saved or sent anywhere.</span></div>
+      <div class="point"><b data-i18n="p1_b">끊김 없는 소리</b><span data-i18n="p1_s">지연이 거의 없는 실시간 처리로 음악·영상·통화 모두 자연스럽게 들립니다.</span></div>
+      <div class="point"><b data-i18n="p2_b">클릭 노이즈 없음</b><span data-i18n="p2_s">재생 중에 EQ를 바꿔도 "틱" 소리 없이 부드럽게 전환됩니다.</span></div>
+      <div class="point"><b data-i18n="p3_b">자가 복구</b><span data-i18n="p3_s">출력 장치를 바꾸거나 잠자기에서 깨어나도 스스로 다시 연결됩니다.</span></div>
+      <div class="point"><b data-i18n="p4_b">녹음하지 않음</b><span data-i18n="p4_s">오디오는 실시간으로 처리만 되고 저장되거나 전송되지 않습니다.</span></div>
     </div>
   </div>
 </section>
@@ -282,56 +282,56 @@
 <section id="install">
   <div class="wrap">
     <div class="eyebrow">Install</div>
-    <h2 data-i18n="inst_h2">Installation</h2>
-    <p data-i18n="inst_sub" class="sub">This is a personally distributed app that isn't notarized by Apple, so you'll need to approve it in macOS security settings the first time.</p>
+    <h2 data-i18n="inst_h2">설치하기</h2>
+    <p data-i18n="inst_sub" class="sub">Apple 공증(Notarization)을 받지 않은 개인 배포 앱이라, 처음 한 번은 macOS의 보안 확인을 직접 통과시켜야 합니다.</p>
     <div class="steps">
       <div class="step"><div>
-        <h3 data-i18n="s1_h">Download and move to Applications</h3>
-        <p data-i18n="s1_p">Download <code>AudioMixer.zip</code> from the <a data-repo="releases/latest" href="#">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class="path">Applications</span> folder.</p>
+        <h3 data-i18n="s1_h">내려받아 응용 프로그램 폴더로 옮기기</h3>
+        <p data-i18n="s1_p"><a data-repo="releases/latest" href="#">Releases 페이지</a>에서 <code>AudioMixer.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class="path">응용 프로그램</span> 폴더로 드래그합니다.</p>
       </div></div>
       <div class="step"><div>
-        <h3 data-i18n="s2_h">Allow the first launch</h3>
-        <p data-i18n="s2_p1">When you open the app, macOS warns that it can't verify the developer. Click <b>Done</b>, then go to <span class="path">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password.</p>
-        <p data-i18n="s2_p2">Prefer the Terminal? This one line does the same thing.</p>
-        <pre><button class="copy" data-i18n="copy">Copy</button><code>xattr -dr com.apple.quarantine /Applications/AudioMixer.app</code></pre>
+        <h3 data-i18n="s2_h">처음 실행 허용하기</h3>
+        <p data-i18n="s2_p1">앱을 열면 "확인되지 않은 개발자" 경고가 뜹니다. <b>완료</b>를 누른 뒤 <span class="path">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하세요.</p>
+        <p data-i18n="s2_p2">터미널이 편하다면 아래 명령 한 줄로도 됩니다.</p>
+        <pre><button class="copy" data-i18n="copy">복사</button><code>xattr -dr com.apple.quarantine /Applications/AudioMixer.app</code></pre>
       </div></div>
       <div class="step"><div>
-        <h3 data-i18n="s3_h">Allow System Audio Recording</h3>
-        <p data-i18n="s3_p1">A fader icon appears in the menu bar, and the app asks for permission the first time it processes sound. Click <b>Allow</b>.</p>
-        <p data-i18n="s3_p2">Missed it? Turn on Audio Mixer in <span class="path">System Settings › Privacy &amp; Security › Screen &amp; System Audio Recording</span>.</p>
+        <h3 data-i18n="s3_h">시스템 오디오 녹음 권한 허용</h3>
+        <p data-i18n="s3_p1">메뉴 막대에 페이더 아이콘이 나타나고, 앱이 처음 소리를 처리할 때 권한을 요청합니다. <b>허용</b>을 누르세요.</p>
+        <p data-i18n="s3_p2">놓쳤다면 <span class="path">시스템 설정 › 개인정보 보호 및 보안 › 화면 및 시스템 오디오 녹음</span>에서 Audio Mixer를 켜면 됩니다.</p>
       </div></div>
       <div class="step"><div>
-        <h3 data-i18n="s4_h">(Optional) Launch at login</h3>
-        <p data-i18n="s4_p">Turn on “Launch at Login” in the menu bar icon › <b>Settings</b> tab so it's ready after every restart.</p>
+        <h3 data-i18n="s4_h">(선택) 로그인 시 자동 실행</h3>
+        <p data-i18n="s4_p">메뉴 막대 아이콘 › <b>설정</b> 탭에서 "로그인 시 실행"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.</p>
       </div></div>
     </div>
-    <div data-i18n="note" class="note"><b>Your sound still works if you deny permission.</b> In that case only device volume control is available; per-app volume and EQ won't work.</div>
+    <div data-i18n="note" class="note"><b>권한을 거부해도 소리는 정상입니다.</b> 이 경우 장치 볼륨 제어만 가능하고, 앱별 볼륨·EQ는 동작하지 않습니다.</div>
   </div>
 </section>
 
 <section id="faq">
   <div class="wrap">
     <div class="eyebrow">FAQ</div>
-    <h2 data-i18n="faq_h2">Frequently Asked Questions</h2>
-    <details><summary data-i18n="q1">Why does it need “System Audio Recording” permission?</summary>
-      <p data-i18n="a1">To apply volume and EQ to other apps' sound, Audio Mixer has to receive and process that sound, and macOS groups this ability under the “System Audio Recording” permission. Audio Mixer only processes audio in real time; it never saves it to a file or sends it anywhere.</p></details>
-    <details><summary data-i18n="q2">If I force-quit the app, will my sound stop?</summary>
-      <p data-i18n="a2">No. The moment Audio Mixer quits, macOS releases its connection and every app's sound goes straight back to its original path.</p></details>
-    <details><summary data-i18n="q3">Will it interfere with my DAW or audio interface?</summary>
-      <p data-i18n="a3">Apps that output directly to a device other than the current default output (for example, a DAW using an audio interface) are left alone. You can also right-click an app in the Mixer tab to exclude it from processing.</p></details>
-    <details><summary data-i18n="q4">I briefly hear the original sound when playback starts.</summary>
-      <p data-i18n="a4">There's a very short moment between an app starting playback and Audio Mixer picking up its sound, so you may hear unprocessed audio during that time. This is normal.</p></details>
-    <details><summary data-i18n="q5">It asks for permission again after an update.</summary>
-      <p data-i18n="a5">Because this personally distributed app isn't notarized, each new version has a different signature and macOS may treat it as a different app. Remove the old entry in the permission settings and allow it again.</p></details>
-    <details><summary data-i18n="q6">Where do I report bugs?</summary>
-      <p data-i18n="a6">Please open a <a data-repo="issues" href="#">GitHub Issue</a> with your macOS version, the output device you use and the steps to reproduce. You can also email <a href="mailto:jayusop@gmail.com">jayusop@gmail.com</a>.</p></details>
+    <h2 data-i18n="faq_h2">자주 묻는 질문</h2>
+    <details><summary data-i18n="q1">왜 "시스템 오디오 녹음" 권한이 필요한가요?</summary>
+      <p data-i18n="a1">다른 앱의 소리에 볼륨·EQ를 적용하려면 그 소리를 받아 처리해야 하는데, macOS는 이 기능을 "시스템 오디오 녹음" 권한으로 묶어 두었습니다. Audio Mixer는 오디오를 실시간으로 처리만 하며 파일로 저장하거나 외부로 보내지 않습니다.</p></details>
+    <details><summary data-i18n="q2">앱을 강제 종료하면 소리가 안 나오지 않나요?</summary>
+      <p data-i18n="a2">아닙니다. Audio Mixer가 꺼지는 순간 macOS가 처리 연결을 해제하고, 모든 앱의 소리가 원래 경로로 즉시 돌아옵니다.</p></details>
+    <details><summary data-i18n="q3">DAW나 오디오 인터페이스를 쓰는데 간섭하지 않나요?</summary>
+      <p data-i18n="a3">현재 기본 출력 장치가 아닌 다른 장치로 직접 출력하는 앱(예: 오디오 인터페이스를 쓰는 DAW)은 건드리지 않습니다. 필요하면 믹서 탭에서 앱을 우클릭해 처리에서 제외할 수도 있습니다.</p></details>
+    <details><summary data-i18n="q4">재생 시작 직후 잠깐 원래 소리가 들려요.</summary>
+      <p data-i18n="a4">앱이 재생을 시작한 뒤 Audio Mixer가 그 소리를 이어받기까지 아주 짧은 순간이 있어, 그 사이에는 처리 전 소리가 날 수 있습니다. 정상 동작입니다.</p></details>
+    <details><summary data-i18n="q5">업데이트 후 권한을 다시 물어봐요.</summary>
+      <p data-i18n="a5">공증받지 않은 개인 배포 앱은 새 버전마다 서명이 달라져 macOS가 다른 앱으로 인식할 수 있습니다. 권한 설정에서 기존 항목을 지우고 다시 허용해 주세요.</p></details>
+    <details><summary data-i18n="q6">버그는 어디로 알리나요?</summary>
+      <p data-i18n="a6"><a data-repo="issues" href="#">GitHub Issues</a>에 macOS 버전, 사용 중인 출력 장치, 재현 방법을 남겨 주세요. 메일은 <a href="mailto:jayusop@gmail.com">jayusop@gmail.com</a>.</p></details>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
     <span>© 2026 jayusop · Audio Mixer</span>
-    <span data-i18n="foot_eq">EQ profile data: <a href="https://github.com/jaakkopasanen/AutoEq">AutoEq (jaakkopasanen)</a></span>
+    <span data-i18n="foot_eq">EQ 프로필 데이터: <a href="https://github.com/jaakkopasanen/AutoEq">AutoEq (jaakkopasanen)</a></span>
     <span><a data-repo="" href="#">GitHub</a> · <a data-repo="releases" href="#">Releases</a> · <a data-repo="issues" href="#">Issues</a></span>
   </div>
 </footer>
@@ -340,7 +340,7 @@
   /* ▼ GitHub repository — change this one line to update every link on the page */
   const REPO = "jayusop/Audio-Mixer";
 
-  /* Translations: en (default) · ko · zh (Simplified Chinese) · ja */
+  /* Translations: ko (default) · en · zh (Simplified Chinese) · ja */
   const I18N = {
  "meta_title": {
   "en": "Audio Mixer for macOS",
@@ -823,23 +823,23 @@
   "ja": "言語"
  }
 };
-  const SUPPORTED = ["en", "ko", "zh", "ja"];
+  const SUPPORTED = ["ko", "en", "zh", "ja"];
   const HTML_LANG = { en: "en", ko: "ko", zh: "zh-Hans", ja: "ja" };
 
   function pickLanguage() {
-    // 1) ?lang=xx in the URL  2) the visitor's earlier choice  3) browser/OS language  4) English
+    // 1) ?lang=xx in the URL  2) the visitor's earlier choice  3) browser/OS language  4) Korean
     const q = new URLSearchParams(location.search).get("lang");
     if (q && SUPPORTED.includes(q)) return q;
     try {
       const saved = localStorage.getItem("am-lang");
       if (saved && SUPPORTED.includes(saved)) return saved;
     } catch (e) {}
-    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"];
+    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "ko"];
     for (const tag of prefs) {
       const base = String(tag).toLowerCase().split("-")[0];
       if (SUPPORTED.includes(base)) return base;
     }
-    return "en";
+    return "ko";
   }
 
   function applyRepoLinks() {
@@ -851,7 +851,7 @@
   }
 
   function setLanguage(lang) {
-    const tr = k => (I18N[k] && (I18N[k][lang] || I18N[k].en)) || "";
+    const tr = k => (I18N[k] && (I18N[k][lang] || I18N[k].ko)) || "";
     document.documentElement.lang = HTML_LANG[lang];
     document.title = tr("meta_title");
     document.querySelector('meta[name="description"]').setAttribute("content", tr("meta_desc"));
@@ -877,7 +877,7 @@
   document.querySelectorAll(".copy").forEach(btn => {
     btn.addEventListener("click", () => {
       const text = btn.parentElement.querySelector("code").innerText.trim();
-      const tr = k => I18N[k][window.__lang] || I18N[k].en;
+      const tr = k => I18N[k][window.__lang] || I18N[k].ko;
       navigator.clipboard?.writeText(text).then(() => {
         btn.textContent = tr("copied");
         setTimeout(() => btn.textContent = tr("copy"), 1500);
