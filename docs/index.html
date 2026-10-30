@@ -144,6 +144,13 @@
   html:lang(zh-Hans) body{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Noto Sans KR",-apple-system,sans-serif}
   html:lang(ja) h1,html:lang(zh-Hans) h1{letter-spacing:0}
   pre code{font:inherit;color:inherit;background:none;padding:0}
+  /* line breaking: never split Korean words; proper CJK punctuation rules; balanced headings */
+  .nw{white-space:nowrap}
+  h1,h2,h3{text-wrap:balance}
+  html:lang(ko) body{word-break:keep-all;overflow-wrap:break-word}
+  html:lang(ja) body,html:lang(zh-Hans) body{line-break:strict;overflow-wrap:break-word}
+  html:lang(ja) h2,html:lang(ja) h3{word-break:auto-phrase}
+  html:lang(ja) h1,html:lang(zh-Hans) h1{font-size:clamp(30px,4.4vw,48px);line-height:1.25}
 </style>
 </head>
 <body>
@@ -375,8 +382,8 @@
  "hero_h1": {
   "en": "Every app at its own volume,<br><span class=\"g\">right from the menu bar.</span>",
   "ko": "앱마다 다른 볼륨,<br><span class=\"g\">메뉴 막대 한 곳에서.</span>",
-  "zh": "每个应用，独立音量，<br><span class=\"g\">尽在菜单栏。</span>",
-  "ja": "アプリごとの音量を、<br><span class=\"g\">メニューバーでまとめて。</span>"
+  "zh": "<span class=\"nw\">每个应用，</span><span class=\"nw\">独立音量，</span><br><span class=\"g\"><span class=\"nw\">尽在菜单栏。</span></span>",
+  "ja": "<span class=\"nw\">アプリごとの</span><span class=\"nw\">音量を、</span><br><span class=\"g\"><span class=\"nw\">メニューバーで</span><span class=\"nw\">まとめて。</span></span>"
  },
  "hero_lead": {
   "en": "An audio mixer that lives in the macOS menu bar. Per-app volume, a 10-band and parametric equalizer, and AutoEQ headphone correction — all without installing a virtual audio driver.",
@@ -827,19 +834,34 @@
   const HTML_LANG = { en: "en", ko: "ko", zh: "zh-Hans", ja: "ja" };
 
   function pickLanguage() {
-    // 1) ?lang=xx in the URL  2) the visitor's earlier choice  3) browser/OS language  4) Korean
+    // 1) ?lang=xx in the URL  2) the visitor's own earlier choice
+    // 3) Korean if Korean is anywhere in the browser/OS language list
+    // 4) otherwise the first supported language in that list  5) Korean (default)
     const q = new URLSearchParams(location.search).get("lang");
     if (q && SUPPORTED.includes(q)) return q;
     try {
       const saved = localStorage.getItem("am-lang");
       if (saved && SUPPORTED.includes(saved)) return saved;
     } catch (e) {}
-    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "ko"];
-    for (const tag of prefs) {
-      const base = String(tag).toLowerCase().split("-")[0];
+    const prefs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "ko"])
+      .map(t => String(t).toLowerCase().split("-")[0]);
+    if (prefs.includes("ko")) return "ko";
+    for (const base of prefs) {
       if (SUPPORTED.includes(base)) return base;
     }
     return "ko";
+  }
+
+  // CJK web fonts so Chinese/Japanese also render cleanly on Windows/Linux (Macs use system fonts)
+  const FONT_URL = {
+    ja: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap",
+    zh: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap"
+  };
+  function ensureFont(lang) {
+    if (!FONT_URL[lang] || document.getElementById("font-" + lang)) return;
+    const l = document.createElement("link");
+    l.id = "font-" + lang; l.rel = "stylesheet"; l.href = FONT_URL[lang];
+    document.head.appendChild(l);
   }
 
   function applyRepoLinks() {
@@ -852,6 +874,7 @@
 
   function setLanguage(lang) {
     const tr = k => (I18N[k] && (I18N[k][lang] || I18N[k].ko)) || "";
+    ensureFont(lang);
     document.documentElement.lang = HTML_LANG[lang];
     document.title = tr("meta_title");
     document.querySelector('meta[name="description"]').setAttribute("content", tr("meta_desc"));
