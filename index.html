@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio Mixer for macOS</title>
+<meta name="description" content="메뉴 막대에 상주하는 macOS 오디오 믹서 — 앱별 볼륨, 10밴드·파라메트릭 EQ, AutoEQ 헤드폰 보정. 가상 드라이버 설치 없이 동작합니다.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0d1f; --bg2:#12142b; --panel:#171a35; --line:#272b52;
+    --text:#e9ebff; --muted:#9aa0c8; --dim:#6b7099;
+    --cyan:#5fe1f2; --violet:#8f7dff; --pink:#ff6fb6;
+    --grad:linear-gradient(90deg,var(--cyan),var(--violet) 55%,var(--pink));
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,kbd,pre{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  @media (max-width:600px){.wrap{padding:0 16px}.step{grid-template-columns:minmax(0,1fr);gap:12px;padding:16px}.path{white-space:normal!important}.row{grid-template-columns:22px 1fr 80px 34px}}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:10;background:rgba(12,13,31,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:20px;height:56px}
+  nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+  nav .brand img{width:26px;height:26px}
+  nav .links{margin-left:auto;display:flex;gap:20px;font-size:14px}
+  nav .links a{color:var(--muted)}
+  nav .links a:hover{color:var(--text);text-decoration:none}
+  @media (max-width:720px){nav .links a:not(.gh){display:none}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:88px 0 72px}
+  .hero::before{content:"";position:absolute;inset:-40% -10% auto -10%;height:120%;background:
+     radial-gradient(40% 50% at 25% 40%,rgba(95,225,242,.14),transparent 70%),
+     radial-gradient(40% 50% at 75% 30%,rgba(255,111,182,.12),transparent 70%);pointer-events:none}
+  .hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr)}}
+  .hero-icon{width:96px;height:96px;margin-bottom:20px;filter:drop-shadow(0 12px 30px rgba(143,125,255,.35))}
+  h1{font-size:clamp(34px,5vw,54px);line-height:1.15;margin:0 0 18px;font-weight:900;letter-spacing:-.02em}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:18px;color:var(--muted);margin:0 0 30px;max-width:520px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid var(--line);color:var(--text);background:var(--panel);transition:transform .15s,border-color .15s}
+  .btn:hover{text-decoration:none;transform:translateY(-1px);border-color:var(--violet)}
+  .btn.primary{background:var(--grad);color:#0c0d1f;border:none}
+  .btn svg{width:18px;height:18px}
+  .req{margin-top:16px;font-size:13px;color:var(--dim)}
+  .req b{color:var(--muted);font-weight:500}
+
+  /* mock window */
+  .mock{background:linear-gradient(180deg,#1b1e3d,#14162e);border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.02) inset;padding:16px;max-width:420px;justify-self:center;width:100%}
+  .mock-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .mock-top b{font-size:14px}
+  .switch{width:34px;height:20px;border-radius:20px;background:var(--violet);position:relative}
+  .switch::after{content:"";position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);background:#0f1126;border-radius:9px;padding:3px;margin-bottom:14px;font-size:12px;text-align:center}
+  .tabs span{padding:5px 0;border-radius:7px;color:var(--muted)}
+  .tabs span.on{background:#2a2e58;color:var(--text)}
+  .card{background:#101229;border:1px solid #222649;border-radius:11px;padding:11px 12px;margin-bottom:10px}
+  .card h4{margin:0 0 8px;font-size:11px;color:var(--dim);font-weight:500;letter-spacing:.04em}
+  .row{display:grid;grid-template-columns:22px 1fr 110px 34px;align-items:center;gap:9px;font-size:12.5px;padding:5px 0}
+  .appdot{width:22px;height:22px;border-radius:6px}
+  .slider{height:5px;border-radius:5px;background:#272b52;position:relative}
+  .slider i{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--grad)}
+  .slider i::after{content:"";position:absolute;right:-6px;top:-4px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .pct{font-family:"JetBrains Mono";font-size:11px;color:var(--muted);text-align:right}
+  .meter{height:3px;border-radius:3px;background:#1d2042;margin-top:3px;overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--cyan);opacity:.7;animation:lvl 1.6s ease-in-out infinite alternate}
+  @keyframes lvl{from{width:20%}to{width:var(--w,70%)}}
+  @media (prefers-reduced-motion:reduce){.meter i{animation:none;width:var(--w,60%)}}
+  .eqsvg{width:100%;height:auto;display:block}
+
+  /* sections */
+  section{padding:80px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:"JetBrains Mono";font-size:12px;letter-spacing:.14em;color:var(--violet);text-transform:uppercase;margin-bottom:10px}
+  h2{font-size:clamp(26px,3.4vw,36px);line-height:1.25;margin:0 0 14px;font-weight:900;letter-spacing:-.015em}
+  .sub{color:var(--muted);max-width:640px;margin:0 0 40px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .feat{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .feat .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:14px;background:rgba(143,125,255,.12);color:var(--violet)}
+  .feat .ic svg{width:20px;height:20px}
+  .feat h3{margin:0 0 6px;font-size:17px}
+  .feat p{margin:0;color:var(--muted);font-size:14.5px}
+  .feat ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+
+  /* flow */
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:8px 0 28px}
+  .node{flex:1 1 150px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 14px;font-size:14px;position:relative}
+  .node b{display:block;font-size:14.5px;margin-bottom:2px}
+  .node span{color:var(--dim);font-size:12.5px}
+  .arrow{flex:0 0 28px;display:grid;place-items:center;color:var(--violet)}
+  .node.hl{border-color:var(--violet);background:linear-gradient(180deg,rgba(143,125,255,.12),var(--bg2))}
+  @media (max-width:760px){.flow{flex-direction:column}.arrow{transform:rotate(90deg);height:28px}}
+  .points{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .point{border-left:2px solid var(--violet);padding:4px 0 4px 14px}
+  .point b{display:block;margin-bottom:3px}
+  .point span{color:var(--muted);font-size:14px}
+
+  /* steps */
+  .steps{counter-reset:s;display:grid;gap:14px;max-width:820px}
+  .step{counter-increment:s;display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .step::before{content:counter(s);width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:900;font-size:18px;background:var(--grad);color:#0c0d1f}
+  .step h3{margin:2px 0 6px;font-size:17px}
+  .step p{margin:0 0 8px;color:var(--muted);font-size:14.5px}
+  .step p:last-child{margin-bottom:0}
+  .path{color:var(--text);background:#1f2346;border-radius:6px;padding:1px 7px;font-size:13.5px;white-space:nowrap}
+  pre{background:#090a18;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6;margin:10px 0 0;color:#cfd3ff;position:relative}
+  pre .c{color:var(--dim)}
+  .copy{position:absolute;top:8px;right:8px;font:500 11px "Noto Sans KR";background:#1f2346;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;cursor:pointer}
+  .copy:hover{color:var(--text)}
+  .note{margin-top:22px;max-width:820px;border:1px solid rgba(95,225,242,.3);background:rgba(95,225,242,.06);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--muted)}
+  .note b{color:var(--text)}
+  kbd{background:#1f2346;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font-size:12.5px;color:var(--text)}
+
+  /* faq */
+  details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;max-width:820px}
+  summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::after{content:"+";color:var(--violet);font-weight:400;font-size:20px;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{margin:10px 0 0;color:var(--muted);font-size:14.5px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 48px;color:var(--dim);font-size:13.5px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+  footer a{color:var(--muted)}
+
+  /* language picker */
+  .lang{position:relative;display:flex;align-items:center;gap:6px;margin-left:8px;color:var(--muted);font-size:13px}
+  .lang svg{width:16px;height:16px;flex:none}
+  .lang select{appearance:none;-webkit-appearance:none;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 26px 5px 9px;font:500 13px inherit;font-family:inherit;cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 13px) 50%,calc(100% - 9px) 50%;background-size:4px 4px;background-repeat:no-repeat}
+  .lang select:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+  @media (max-width:720px){nav .links{margin-left:auto}}
+  /* CJK font stacks */
+  html:lang(ja) body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Noto Sans KR",-apple-system,sans-serif}
+  html:lang(zh-Hans) body{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Noto Sans KR",-apple-system,sans-serif}
+  html:lang(ja) h1,html:lang(zh-Hans) h1{letter-spacing:0}
+  pre code{font:inherit;color:inherit;background:none;padding:0}
+  /* line breaking: never split Korean words; proper CJK punctuation rules; balanced headings */
+  .nw{white-space:nowrap}
+  h1,h2,h3{text-wrap:balance}
+  html:lang(ko) body{word-break:keep-all;overflow-wrap:break-word}
+  html:lang(ja) body,html:lang(zh-Hans) body{line-break:strict;overflow-wrap:break-word}
+  html:lang(ja) h2,html:lang(ja) h3{word-break:auto-phrase}
+  html:lang(ja) h1,html:lang(zh-Hans) h1{font-size:clamp(30px,4.4vw,48px);line-height:1.25}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="icon.png" alt="">Audio Mixer</a>
+    <div class="links">
+      <a href="#features" data-i18n="nav_features">기능</a>
+      <a href="#install" data-i18n="nav_install">설치</a>
+      <a href="#faq">FAQ</a>
+      <a class="gh" data-repo="" href="#">GitHub ↗</a>
+    </div>
+    <label class="lang">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+      <select id="lang" aria-label="Language">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+        <option value="ja">日本語</option>
+        <option value="fr">Français</option>
+      </select>
+    </label>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <img class="hero-icon" src="icon.png" alt="Audio Mixer 아이콘" data-i18n-alt="icon_alt">
+      <h1 data-i18n="hero_h1">앱마다 다른 볼륨,<br><span class="g">메뉴 막대 한 곳에서.</span></h1>
+      <p data-i18n="hero_lead" class="lead">macOS 메뉴 막대에 상주하는 오디오 믹서입니다. 앱별 볼륨, 10밴드·파라메트릭 이퀄라이저, AutoEQ 헤드폰 보정까지 — 가상 오디오 드라이버 설치 없이 동작합니다.</p>
+      <div class="cta">
+        <a class="btn primary" data-repo="releases/latest/download/AudioMixer.zip" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+          <span data-i18n="btn_download">최신 버전 다운로드</span>
+        </a>
+        <a class="btn" data-repo="releases" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          <span data-i18n="btn_releases">모든 버전 · 변경 내역</span>
+        </a>
+      </div>
+      <p data-i18n="req" class="req"><b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · 무료</p>
+    </div>
+
+    <div class="mock" aria-label="앱 화면 예시" data-i18n-aria="mock_label">
+      <div class="mock-top"><b>Audio Mixer</b><span class="switch"></span></div>
+      <div class="tabs"><span class="on" data-i18n="mock_tab1">믹서</span><span data-i18n="mock_tab2">이퀄라이저</span><span data-i18n="mock_tab3">설정</span></div>
+      <div class="card">
+        <h4 data-i18n="mock_out">출력 · MacBook Pro 스피커</h4>
+        <div class="row"><span class="appdot" style="background:#2b2f5c"></span><div><div class="slider"><i style="width:72%"></i></div></div><span></span><span class="pct">72%</span></div>
+      </div>
+      <div class="card">
+        <h4 data-i18n="mock_apps">앱별 볼륨</h4>
+        <div class="row"><span class="appdot" style="background:#1db954"></span><div>Spotify<div class="meter"><i style="--w:78%"></i></div></div><div class="slider"><i style="width:85%"></i></div><span class="pct">85%</span></div>
+        <div class="row"><span class="appdot" style="background:#ff4f4f"></span><div>Safari<div class="meter"><i style="--w:52%;animation-delay:.4s"></i></div></div><div class="slider"><i style="width:40%"></i></div><span class="pct">40%</span></div>
+        <div class="row"><span class="appdot" style="background:#5b8cff"></span><div>Zoom<div class="meter"><i style="--w:64%;animation-delay:.8s"></i></div></div><div class="slider"><i style="width:100%"></i></div><span class="pct">100%</span></div>
+      </div>
+      <div class="card">
+        <h4 data-i18n="mock_eq">EQ · 하만 스타일 저음</h4>
+        <svg class="eqsvg" viewBox="0 0 360 80" aria-hidden="true">
+          <defs><linearGradient id="eqg" x1="0" x2="1"><stop offset="0" stop-color="#5fe1f2"/><stop offset=".55" stop-color="#8f7dff"/><stop offset="1" stop-color="#ff6fb6"/></linearGradient>
+          <linearGradient id="eqf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f7dff" stop-opacity=".35"/><stop offset="1" stop-color="#8f7dff" stop-opacity="0"/></linearGradient></defs>
+          <g stroke="#232750" stroke-width="1"><line x1="0" y1="40" x2="360" y2="40"/><line x1="0" y1="15" x2="360" y2="15" stroke-dasharray="2 4"/><line x1="0" y1="65" x2="360" y2="65" stroke-dasharray="2 4"/></g>
+          <path d="M0 22 C40 20 70 24 100 34 S150 44 190 42 S250 38 280 33 S330 30 360 36 L360 80 L0 80Z" fill="url(#eqf)"/>
+          <path d="M0 22 C40 20 70 24 100 34 S150 44 190 42 S250 38 280 33 S330 30 360 36" fill="none" stroke="url(#eqg)" stroke-width="2.4"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2 data-i18n="feat_h2">필요한 건 다 있고, 설치할 드라이버는 없습니다</h2>
+    <p data-i18n="feat_sub" class="sub">macOS에 내장된 오디오 기능만 사용합니다. BlackHole·Soundflower 같은 가상 오디오 장치를 따로 설치할 필요가 없습니다.</p>
+    <div class="grid">
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4v16M12 4v16M18 4v16"/><rect x="3.5" y="13" width="5" height="3" rx="1" fill="currentColor"/><rect x="9.5" y="7" width="5" height="3" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3" rx="1" fill="currentColor"/></svg></div>
+        <h3 data-i18n="f1_h">앱별 볼륨</h3>
+        <p data-i18n="f1_p">소리를 내는 앱을 자동으로 찾아 각각 0–100%(옵션 최대 200%)로 조절합니다. 음소거, 레벨 미터, 앱별 설정 기억까지.</p>
+        <ul><li data-i18n="f1_l1">헬퍼 프로세스는 상위 앱으로 묶어서 표시</li><li data-i18n="f1_l2">우클릭으로 특정 앱 처리 제외</li></ul>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg></div>
+        <h3 data-i18n="f2_h">입·출력 장치 제어</h3>
+        <p data-i18n="f2_p">출력·입력 장치 전환과 하드웨어 볼륨·음소거. HDMI처럼 하드웨어 볼륨이 없는 장치는 소프트웨어 볼륨으로 대신합니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 14c3 0 3-6 6-6s3 9 6 9 3-6 8-6"/></svg></div>
+        <h3 data-i18n="f3_h">그래픽 · 파라메트릭 EQ</h3>
+        <p data-i18n="f3_p">10밴드 그래픽 EQ(±12 dB)와 최대 32개 파라메트릭 필터(PK·LSC·HSC·LP·HP·NO). 주파수 응답 곡선을 보며 드래그로 편집합니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></div>
+        <h3 data-i18n="f4_h">AutoEQ 헤드폰 보정</h3>
+        <p data-i18n="f4_p">AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다. ParametricEQ.txt 가져오기/내보내기 지원.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg></div>
+        <h3 data-i18n="f5_h">프리셋 &amp; 장치별 자동 전환</h3>
+        <p data-i18n="f5_p">기본 프리셋 17종과 사용자 프리셋. 이어폰을 꽂으면 그 장치에 지정한 EQ로 자동 전환됩니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <h3 data-i18n="f6_h">음질 보호</h3>
+        <p data-i18n="f6_p">EQ 부스트만큼 자동으로 낮추는 프리앰프, 피크 리미터, 하드 클립 보호, L/R 밸런스로 소리가 깨지지 않게 지킵니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">How it works</div>
+    <h2 data-i18n="how_h2">소리가 지나가는 길</h2>
+    <p data-i18n="how_sub" class="sub">Audio Mixer가 실행 중일 때만 각 앱의 소리를 받아 처리합니다. Audio Mixer를 끄거나 비정상 종료돼도 모든 앱의 소리가 즉시 원래대로 돌아옵니다.</p>
+    <div class="flow">
+      <div class="node"><b data-i18n="n1_b">앱 오디오</b><span>Spotify, Safari …</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b data-i18n="n2_b">Audio Mixer가 받아서</b><span data-i18n="n2_s">원래 출력은 잠시 대기</span></div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b data-i18n="n3_b">실시간 처리</b><span data-i18n="n3_s">볼륨 · EQ · 리미터</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b data-i18n="n4_b">출력 장치</b><span data-i18n="n4_s">스피커 · 헤드폰</span></div>
+    </div>
+    <div class="points">
+      <div class="point"><b data-i18n="p1_b">끊김 없는 소리</b><span data-i18n="p1_s">지연이 거의 없는 실시간 처리로 음악·영상·통화 모두 자연스럽게 들립니다.</span></div>
+      <div class="point"><b data-i18n="p2_b">클릭 노이즈 없음</b><span data-i18n="p2_s">재생 중에 EQ를 바꿔도 "틱" 소리 없이 부드럽게 전환됩니다.</span></div>
+      <div class="point"><b data-i18n="p3_b">자가 복구</b><span data-i18n="p3_s">출력 장치를 바꾸거나 잠자기에서 깨어나도 스스로 다시 연결됩니다.</span></div>
+      <div class="point"><b data-i18n="p4_b">녹음하지 않음</b><span data-i18n="p4_s">오디오는 실시간으로 처리만 되고 저장되거나 전송되지 않습니다.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="eyebrow">Install</div>
+    <h2 data-i18n="inst_h2">설치하기</h2>
+    <p data-i18n="inst_sub" class="sub">Apple 공증(Notarization)을 받지 않은 개인 배포 앱이라, 처음 한 번은 macOS의 보안 확인을 직접 통과시켜야 합니다.</p>
+    <div class="steps">
+      <div class="step"><div>
+        <h3 data-i18n="s1_h">내려받아 응용 프로그램 폴더로 옮기기</h3>
+        <p data-i18n="s1_p"><a data-repo="releases/latest" href="#">Releases 페이지</a>에서 <code>AudioMixer.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class="path">응용 프로그램</span> 폴더로 드래그합니다.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3 data-i18n="s2_h">처음 실행 허용하기</h3>
+        <p data-i18n="s2_p1">앱을 열면 "확인되지 않은 개발자" 경고가 뜹니다. <b>완료</b>를 누른 뒤 <span class="path">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하세요.</p>
+        <p data-i18n="s2_p2">터미널이 편하다면 아래 명령 한 줄로도 됩니다.</p>
+        <pre><button class="copy" data-i18n="copy">복사</button><code>xattr -dr com.apple.quarantine /Applications/AudioMixer.app</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3 data-i18n="s3_h">시스템 오디오 녹음 권한 허용</h3>
+        <p data-i18n="s3_p1">메뉴 막대에 페이더 아이콘이 나타나고, 앱이 처음 소리를 처리할 때 권한을 요청합니다. <b>허용</b>을 누르세요.</p>
+        <p data-i18n="s3_p2">놓쳤다면 <span class="path">시스템 설정 › 개인정보 보호 및 보안 › 화면 및 시스템 오디오 녹음</span>에서 Audio Mixer를 켜면 됩니다.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3 data-i18n="s4_h">(선택) 로그인 시 자동 실행</h3>
+        <p data-i18n="s4_p">메뉴 막대 아이콘 › <b>설정</b> 탭에서 "로그인 시 실행"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.</p>
+      </div></div>
+    </div>
+    <div data-i18n="note" class="note"><b>권한을 거부해도 소리는 정상입니다.</b> 이 경우 장치 볼륨 제어만 가능하고, 앱별 볼륨·EQ는 동작하지 않습니다.</div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2 data-i18n="faq_h2">자주 묻는 질문</h2>
+    <details><summary data-i18n="q1">왜 "시스템 오디오 녹음" 권한이 필요한가요?</summary>
+      <p data-i18n="a1">다른 앱의 소리에 볼륨·EQ를 적용하려면 그 소리를 받아 처리해야 하는데, macOS는 이 기능을 "시스템 오디오 녹음" 권한으로 묶어 두었습니다. Audio Mixer는 오디오를 실시간으로 처리만 하며 파일로 저장하거나 외부로 보내지 않습니다.</p></details>
+    <details><summary data-i18n="q2">앱을 강제 종료하면 소리가 안 나오지 않나요?</summary>
+      <p data-i18n="a2">아닙니다. Audio Mixer가 꺼지는 순간 macOS가 처리 연결을 해제하고, 모든 앱의 소리가 원래 경로로 즉시 돌아옵니다.</p></details>
+    <details><summary data-i18n="q3">DAW나 오디오 인터페이스를 쓰는데 간섭하지 않나요?</summary>
+      <p data-i18n="a3">현재 기본 출력 장치가 아닌 다른 장치로 직접 출력하는 앱(예: 오디오 인터페이스를 쓰는 DAW)은 건드리지 않습니다. 필요하면 믹서 탭에서 앱을 우클릭해 처리에서 제외할 수도 있습니다.</p></details>
+    <details><summary data-i18n="q4">재생 시작 직후 잠깐 원래 소리가 들려요.</summary>
+      <p data-i18n="a4">앱이 재생을 시작한 뒤 Audio Mixer가 그 소리를 이어받기까지 아주 짧은 순간이 있어, 그 사이에는 처리 전 소리가 날 수 있습니다. 정상 동작입니다.</p></details>
+    <details><summary data-i18n="q5">업데이트 후 권한을 다시 물어봐요.</summary>
+      <p data-i18n="a5">공증받지 않은 개인 배포 앱은 새 버전마다 서명이 달라져 macOS가 다른 앱으로 인식할 수 있습니다. 권한 설정에서 기존 항목을 지우고 다시 허용해 주세요.</p></details>
+    <details><summary data-i18n="q6">버그는 어디로 알리나요?</summary>
+      <p data-i18n="a6"><a data-repo="issues" href="#">GitHub Issues</a>에 macOS 버전, 사용 중인 출력 장치, 재현 방법을 남겨 주세요. 메일은 <a href="mailto:jayusop@gmail.com">jayusop@gmail.com</a>.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 jayusop · Audio Mixer</span>
+    <span data-i18n="foot_eq">EQ 프로필 데이터: <a href="https://github.com/jaakkopasanen/AutoEq">AutoEq (jaakkopasanen)</a></span>
+    <span><a data-repo="" href="#">GitHub</a> · <a data-repo="releases" href="#">Releases</a> · <a data-repo="issues" href="#">Issues</a></span>
+  </div>
+</footer>
+
+<script>
+  /* ▼ GitHub repository — change this one line to update every link on the page */
+  const REPO = "jayusop/Audio-Mixer";
+
+  /* Translations: ko (default) · en · zh (Simplified Chinese) · ja · fr */
+  const I18N = {
+ "meta_title": {
+  "en": "Audio Mixer for macOS",
+  "ko": "Audio Mixer for macOS — 메뉴 막대 오디오 믹서",
+  "zh": "Audio Mixer for macOS — 菜单栏音频混音器",
+  "ja": "Audio Mixer for macOS — メニューバーのオーディオミキサー",
+  "fr": "Audio Mixer pour macOS — Mixeur audio pour la barre des menus"
+ },
+ "meta_desc": {
+  "en": "A macOS menu bar audio mixer — per-app volume, 10-band & parametric EQ, AutoEQ headphone correction. No virtual audio driver required.",
+  "ko": "메뉴 막대에 상주하는 macOS 오디오 믹서 — 앱별 볼륨, 10밴드·파라메트릭 EQ, AutoEQ 헤드폰 보정. 가상 드라이버 설치 없이 동작합니다.",
+  "zh": "常驻菜单栏的 macOS 音频混音器 — 应用独立音量、10 段与参数均衡器、AutoEQ 耳机校正，无需安装虚拟音频驱动。",
+  "ja": "メニューバーに常駐する macOS オーディオミキサー — アプリ別音量、10バンド・パラメトリック EQ、AutoEQ ヘッドホン補正。仮想ドライバのインストールは不要です。",
+  "fr": "Un mixeur audio pour la barre des menus de macOS — volume par app, égaliseur 10 bandes et paramétrique, correction de casque AutoEQ. Aucun pilote audio virtuel requis."
+ },
+ "nav_features": {
+  "en": "Features",
+  "ko": "기능",
+  "zh": "功能",
+  "ja": "機能",
+  "fr": "Fonctionnalités"
+ },
+ "nav_install": {
+  "en": "Install",
+  "ko": "설치",
+  "zh": "安装",
+  "ja": "インストール",
+  "fr": "Installation"
+ },
+ "icon_alt": {
+  "en": "Audio Mixer icon",
+  "ko": "Audio Mixer 아이콘",
+  "zh": "Audio Mixer 图标",
+  "ja": "Audio Mixer アイコン",
+  "fr": "Icône d'Audio Mixer"
+ },
+ "hero_h1": {
+  "en": "Every app at its own volume,<br><span class=\"g\">right from the menu bar.</span>",
+  "ko": "앱마다 다른 볼륨,<br><span class=\"g\">메뉴 막대 한 곳에서.</span>",
+  "zh": "<span class=\"nw\">每个应用，</span><span class=\"nw\">独立音量，</span><br><span class=\"g\"><span class=\"nw\">尽在菜单栏。</span></span>",
+  "ja": "<span class=\"nw\">アプリごとの</span><span class=\"nw\">音量を、</span><br><span class=\"g\"><span class=\"nw\">メニューバーで</span><span class=\"nw\">まとめて。</span></span>",
+  "fr": "Chaque app à son volume,<br><span class=\"g\">depuis la barre des menus.</span>"
+ },
+ "hero_lead": {
+  "en": "An audio mixer that lives in the macOS menu bar. Per-app volume, a 10-band and parametric equalizer, and AutoEQ headphone correction — all without installing a virtual audio driver.",
+  "ko": "macOS 메뉴 막대에 상주하는 오디오 믹서입니다. 앱별 볼륨, 10밴드·파라메트릭 이퀄라이저, AutoEQ 헤드폰 보정까지 — 가상 오디오 드라이버 설치 없이 동작합니다.",
+  "zh": "常驻 macOS 菜单栏的音频混音器。应用独立音量、10 段与参数均衡器、AutoEQ 耳机校正 —— 无需安装任何虚拟音频驱动。",
+  "ja": "macOS のメニューバーに常駐するオーディオミキサーです。アプリ別音量、10バンド・パラメトリックイコライザ、AutoEQ ヘッドホン補正まで — 仮想オーディオドライバをインストールせずに動作します。",
+  "fr": "Un mixeur audio qui vit dans la barre des menus de macOS. Volume par app, égaliseur 10 bandes et paramétrique, correction de casque AutoEQ — sans installer de pilote audio virtuel."
+ },
+ "btn_download": {
+  "en": "Download Latest",
+  "ko": "최신 버전 다운로드",
+  "zh": "下载最新版",
+  "ja": "最新版をダウンロード",
+  "fr": "Télécharger la dernière version"
+ },
+ "btn_releases": {
+  "en": "All Versions · Changelog",
+  "ko": "모든 버전 · 변경 내역",
+  "zh": "所有版本 · 更新日志",
+  "ja": "すべてのバージョン · 変更履歴",
+  "fr": "Toutes les versions · Nouveautés"
+ },
+ "req": {
+  "en": "<b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · Free",
+  "ko": "<b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · 무료",
+  "zh": "<b>macOS 14.2 Sonoma</b> 或更高版本 · Apple 芯片 / Intel · 免费",
+  "ja": "<b>macOS 14.2 Sonoma</b> 以降 · Apple シリコン / Intel · 無料",
+  "fr": "<b>macOS 14.2 Sonoma</b> ou version ultérieure · Apple Silicon / Intel · Gratuit"
+ },
+ "mock_label": {
+  "en": "App screen example",
+  "ko": "앱 화면 예시",
+  "zh": "应用界面示例",
+  "ja": "アプリ画面の例",
+  "fr": "Exemple d'écran de l'app"
+ },
+ "mock_tab1": {
+  "en": "Mixer",
+  "ko": "믹서",
+  "zh": "混音器",
+  "ja": "ミキサー",
+  "fr": "Mixeur"
+ },
+ "mock_tab2": {
+  "en": "Equalizer",
+  "ko": "이퀄라이저",
+  "zh": "均衡器",
+  "ja": "イコライザ",
+  "fr": "Égaliseur"
+ },
+ "mock_tab3": {
+  "en": "Settings",
+  "ko": "설정",
+  "zh": "设置",
+  "ja": "設定",
+  "fr": "Réglages"
+ },
+ "mock_out": {
+  "en": "Output · MacBook Pro Speakers",
+  "ko": "출력 · MacBook Pro 스피커",
+  "zh": "输出 · MacBook Pro 扬声器",
+  "ja": "出力 · MacBook Pro のスピーカー",
+  "fr": "Sortie · Haut-parleurs MacBook Pro"
+ },
+ "mock_apps": {
+  "en": "App Volume",
+  "ko": "앱별 볼륨",
+  "zh": "应用音量",
+  "ja": "アプリ別音量",
+  "fr": "Volume par app"
+ },
+ "mock_eq": {
+  "en": "EQ · Harman-Style Bass",
+  "ko": "EQ · 하만 스타일 저음",
+  "zh": "EQ · 哈曼风格低音",
+  "ja": "EQ · ハーマン風低音",
+  "fr": "EQ · Basses style Harman"
+ },
+ "feat_h2": {
+  "en": "Everything you need. No driver to install.",
+  "ko": "필요한 건 다 있고, 설치할 드라이버는 없습니다",
+  "zh": "功能一应俱全，无需安装驱动",
+  "ja": "必要な機能はすべて。ドライバのインストールは不要。",
+  "fr": "Tout ce qu'il faut. Aucun pilote à installer."
+ },
+ "feat_sub": {
+  "en": "Uses only the audio features built into macOS. No need to install virtual audio devices like BlackHole or Soundflower.",
+  "ko": "macOS에 내장된 오디오 기능만 사용합니다. BlackHole·Soundflower 같은 가상 오디오 장치를 따로 설치할 필요가 없습니다.",
+  "zh": "仅使用 macOS 内置的音频功能，无需另外安装 BlackHole、Soundflower 等虚拟音频设备。",
+  "ja": "macOS に内蔵されたオーディオ機能だけを使います。BlackHole や Soundflower のような仮想オーディオデバイスを別途インストールする必要はありません。",
+  "fr": "Utilise uniquement les fonctions audio intégrées à macOS. Inutile d'installer des périphériques audio virtuels comme BlackHole ou Soundflower."
+ },
+ "f1_h": {
+  "en": "Per-App Volume",
+  "ko": "앱별 볼륨",
+  "zh": "应用独立音量",
+  "ja": "アプリ別音量",
+  "fr": "Volume par app"
+ },
+ "f1_p": {
+  "en": "Automatically finds apps that are playing sound and sets each one from 0–100% (up to 200% optionally). Mute, level meters, and per-app settings that are remembered.",
+  "ko": "소리를 내는 앱을 자동으로 찾아 각각 0–100%(옵션 최대 200%)로 조절합니다. 음소거, 레벨 미터, 앱별 설정 기억까지.",
+  "zh": "自动识别正在发声的应用，分别在 0–100%（可选最高 200%）之间调节。支持静音、电平表，并记住每个应用的设置。",
+  "ja": "音を出しているアプリを自動で見つけ、それぞれ 0–100%（オプションで最大 200%）に調整します。消音、レベルメーター、アプリごとの設定の記憶も。",
+  "fr": "Détecte automatiquement les apps qui émettent du son et règle chacune de 0 à 100 % (jusqu'à 200 % en option). Coupure du son, vumètres et réglages mémorisés pour chaque app."
+ },
+ "f1_l1": {
+  "en": "Helper processes are grouped under their parent app",
+  "ko": "헬퍼 프로세스는 상위 앱으로 묶어서 표시",
+  "zh": "辅助进程会归入其所属的主应用",
+  "ja": "ヘルパープロセスは親アプリにまとめて表示",
+  "fr": "Les processus auxiliaires sont regroupés sous leur app principale"
+ },
+ "f1_l2": {
+  "en": "Right-click to exclude an app from processing",
+  "ko": "우클릭으로 특정 앱 처리 제외",
+  "zh": "右键即可将某个应用排除在处理之外",
+  "ja": "右クリックで特定のアプリを処理対象外に",
+  "fr": "Clic droit pour exclure une app du traitement"
+ },
+ "f2_h": {
+  "en": "Input & Output Devices",
+  "ko": "입·출력 장치 제어",
+  "zh": "输入与输出设备",
+  "ja": "入出力デバイスの操作",
+  "fr": "Périphériques d'entrée et de sortie"
+ },
+ "f2_p": {
+  "en": "Switch output and input devices, with hardware volume and mute. Devices without hardware volume, such as HDMI, get software volume instead.",
+  "ko": "출력·입력 장치 전환과 하드웨어 볼륨·음소거. HDMI처럼 하드웨어 볼륨이 없는 장치는 소프트웨어 볼륨으로 대신합니다.",
+  "zh": "切换输出与输入设备，支持硬件音量与静音。HDMI 等没有硬件音量的设备将改用软件音量。",
+  "ja": "出力・入力デバイスの切り替えと、ハードウェア音量・消音。HDMI のようにハードウェア音量がないデバイスはソフトウェア音量で代替します。",
+  "fr": "Changez de périphérique de sortie ou d'entrée, avec volume matériel et coupure du son. Les périphériques sans volume matériel, comme le HDMI, utilisent un volume logiciel."
+ },
+ "f3_h": {
+  "en": "Graphic & Parametric EQ",
+  "ko": "그래픽 · 파라메트릭 EQ",
+  "zh": "图形与参数均衡器",
+  "ja": "グラフィック · パラメトリック EQ",
+  "fr": "Égaliseur graphique et paramétrique"
+ },
+ "f3_p": {
+  "en": "A 10-band graphic EQ (±12 dB) and up to 32 parametric filters (PK·LSC·HSC·LP·HP·NO). Edit by dragging while watching the frequency response curve.",
+  "ko": "10밴드 그래픽 EQ(±12 dB)와 최대 32개 파라메트릭 필터(PK·LSC·HSC·LP·HP·NO). 주파수 응답 곡선을 보며 드래그로 편집합니다.",
+  "zh": "10 段图形 EQ（±12 dB）和最多 32 个参数滤波器（PK·LSC·HSC·LP·HP·NO），一边查看频响曲线一边拖动编辑。",
+  "ja": "10バンドのグラフィック EQ（±12 dB）と最大 32 個のパラメトリックフィルタ（PK·LSC·HSC·LP·HP·NO）。周波数特性カーブを見ながらドラッグで編集できます。",
+  "fr": "Un égaliseur graphique 10 bandes (±12 dB) et jusqu'à 32 filtres paramétriques (PK·LSC·HSC·LP·HP·NO). Modifiez-les par glisser-déposer en suivant la courbe de réponse en fréquence."
+ },
+ "f4_h": {
+  "en": "AutoEQ Headphone Correction",
+  "ko": "AutoEQ 헤드폰 보정",
+  "zh": "AutoEQ 耳机校正",
+  "ja": "AutoEQ ヘッドホン補正",
+  "fr": "Correction de casque AutoEQ"
+ },
+ "f4_p": {
+  "en": "Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly. Import/export ParametricEQ.txt.",
+  "ko": "AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다. ParametricEQ.txt 가져오기/내보내기 지원.",
+  "zh": "在应用内搜索 AutoEQ 数据库中约 8,800 款耳机配置并一键应用。支持导入/导出 ParametricEQ.txt。",
+  "ja": "AutoEQ データベースにある約 8,800 件のヘッドホン・イヤホンのプロファイルをアプリ内で検索してすぐに適用。ParametricEQ.txt の読み込み/書き出しにも対応。",
+  "fr": "Recherchez parmi environ 8 800 profils de casques et d'écouteurs de la base AutoEQ directement dans l'app, et appliquez-les en un clic. Import/export de ParametricEQ.txt."
+ },
+ "f5_h": {
+  "en": "Presets & Per-Device Switching",
+  "ko": "프리셋 &amp; 장치별 자동 전환",
+  "zh": "预设与按设备自动切换",
+  "ja": "プリセットとデバイス別の自動切り替え",
+  "fr": "Préréglages et bascule par appareil"
+ },
+ "f5_p": {
+  "en": "17 built-in presets plus your own. Plug in your earphones and the EQ assigned to that device is applied automatically.",
+  "ko": "기본 프리셋 17종과 사용자 프리셋. 이어폰을 꽂으면 그 장치에 지정한 EQ로 자동 전환됩니다.",
+  "zh": "17 种内置预设加上自定义预设。插上耳机，即自动切换到为该设备指定的 EQ。",
+  "ja": "内蔵プリセット 17 種類とユーザープリセット。イヤホンをつなぐと、そのデバイスに割り当てた EQ に自動で切り替わります。",
+  "fr": "17 préréglages intégrés, plus les vôtres. Branchez vos écouteurs et l'EQ associé à cet appareil s'applique automatiquement."
+ },
+ "f6_h": {
+  "en": "Sound Protection",
+  "ko": "음질 보호",
+  "zh": "音质保护",
+  "ja": "音質の保護",
+  "fr": "Protection du son"
+ },
+ "f6_p": {
+  "en": "An auto preamp that lowers the level by the amount of EQ boost, a peak limiter, hard-clip protection and L/R balance keep your sound from distorting.",
+  "ko": "EQ 부스트만큼 자동으로 낮추는 프리앰프, 피크 리미터, 하드 클립 보호, L/R 밸런스로 소리가 깨지지 않게 지킵니다.",
+  "zh": "按 EQ 提升量自动降低电平的前级、峰值限幅器、硬削波保护以及左右声道平衡，防止声音失真。",
+  "ja": "EQ のブースト分だけ自動で下げるプリアンプ、ピークリミッター、ハードクリップ保護、L/R バランスで音割れを防ぎます。",
+  "fr": "Un préampli automatique qui baisse le niveau d'autant que l'amplification de l'EQ, un limiteur de crête, une protection contre l'écrêtage et la balance G/D évitent toute distorsion."
+ },
+ "how_h2": {
+  "en": "How your sound flows",
+  "ko": "소리가 지나가는 길",
+  "zh": "声音的流转路径",
+  "ja": "音の通り道",
+  "fr": "Le parcours de votre son"
+ },
+ "how_sub": {
+  "en": "Audio Mixer processes each app's sound only while it's running. If you quit Audio Mixer — or it quits unexpectedly — every app's sound instantly goes back to normal.",
+  "ko": "Audio Mixer가 실행 중일 때만 각 앱의 소리를 받아 처리합니다. Audio Mixer를 끄거나 비정상 종료돼도 모든 앱의 소리가 즉시 원래대로 돌아옵니다.",
+  "zh": "Audio Mixer 仅在运行时接管并处理各应用的声音。退出 Audio Mixer，或它意外退出时，所有应用的声音都会立即恢复原样。",
+  "ja": "Audio Mixer は起動している間だけ各アプリの音を受け取って処理します。Audio Mixer を終了しても、異常終了しても、すべてのアプリの音はすぐに元どおりに戻ります。",
+  "fr": "Audio Mixer ne traite le son de chaque app que lorsqu'il est ouvert. Si vous le quittez — ou s'il se ferme de façon inattendue — le son de toutes les apps revient instantanément à la normale."
+ },
+ "n1_b": {
+  "en": "App audio",
+  "ko": "앱 오디오",
+  "zh": "应用音频",
+  "ja": "アプリの音声",
+  "fr": "Audio des apps"
+ },
+ "n2_b": {
+  "en": "Picked up by Audio Mixer",
+  "ko": "Audio Mixer가 받아서",
+  "zh": "由 Audio Mixer 接管",
+  "ja": "Audio Mixer が受け取り",
+  "fr": "Pris en charge par Audio Mixer"
+ },
+ "n2_s": {
+  "en": "Original output waits",
+  "ko": "원래 출력은 잠시 대기",
+  "zh": "原输出暂时等待",
+  "ja": "元の出力は一時待機",
+  "fr": "La sortie d'origine patiente"
+ },
+ "n3_b": {
+  "en": "Real-time processing",
+  "ko": "실시간 처리",
+  "zh": "实时处理",
+  "ja": "リアルタイム処理",
+  "fr": "Traitement en temps réel"
+ },
+ "n3_s": {
+  "en": "Volume · EQ · Limiter",
+  "ko": "볼륨 · EQ · 리미터",
+  "zh": "音量 · EQ · 限幅器",
+  "ja": "音量 · EQ · リミッター",
+  "fr": "Volume · EQ · Limiteur"
+ },
+ "n4_b": {
+  "en": "Output device",
+  "ko": "출력 장치",
+  "zh": "输出设备",
+  "ja": "出力デバイス",
+  "fr": "Périphérique de sortie"
+ },
+ "n4_s": {
+  "en": "Speakers · Headphones",
+  "ko": "스피커 · 헤드폰",
+  "zh": "扬声器 · 耳机",
+  "ja": "スピーカー · ヘッドホン",
+  "fr": "Haut-parleurs · Casque"
+ },
+ "p1_b": {
+  "en": "Seamless sound",
+  "ko": "끊김 없는 소리",
+  "zh": "流畅无断续",
+  "ja": "途切れない音",
+  "fr": "Son sans coupure"
+ },
+ "p1_s": {
+  "en": "Near-zero-latency processing keeps music, video and calls sounding natural.",
+  "ko": "지연이 거의 없는 실시간 처리로 음악·영상·통화 모두 자연스럽게 들립니다.",
+  "zh": "几乎零延迟的实时处理，让音乐、视频和通话都自然流畅。",
+  "ja": "遅延のほとんどないリアルタイム処理で、音楽・動画・通話も自然に聞こえます。",
+  "fr": "Un traitement quasi sans latence : musique, vidéos et appels restent naturels."
+ },
+ "p2_b": {
+  "en": "No clicks",
+  "ko": "클릭 노이즈 없음",
+  "zh": "无咔嗒声",
+  "ja": "クリックノイズなし",
+  "fr": "Aucun clic"
+ },
+ "p2_s": {
+  "en": "Changing the EQ during playback transitions smoothly — no pops.",
+  "ko": "재생 중에 EQ를 바꿔도 \"틱\" 소리 없이 부드럽게 전환됩니다.",
+  "zh": "播放中调整 EQ 也能平滑过渡，不会发出“咔嗒”声。",
+  "ja": "再生中に EQ を変えても「プチッ」という音なく滑らかに切り替わります。",
+  "fr": "Modifier l'EQ pendant la lecture se fait en douceur, sans « pop »."
+ },
+ "p3_b": {
+  "en": "Self-healing",
+  "ko": "자가 복구",
+  "zh": "自动恢复",
+  "ja": "自動復旧",
+  "fr": "Reprise automatique"
+ },
+ "p3_s": {
+  "en": "Reconnects on its own after you switch output devices or wake from sleep.",
+  "ko": "출력 장치를 바꾸거나 잠자기에서 깨어나도 스스로 다시 연결됩니다.",
+  "zh": "切换输出设备或从睡眠中唤醒后会自动重新连接。",
+  "ja": "出力デバイスを切り替えたり、スリープから復帰したりしても自動で再接続します。",
+  "fr": "Se reconnecte tout seul après un changement de sortie ou la sortie de veille."
+ },
+ "p4_b": {
+  "en": "Never records",
+  "ko": "녹음하지 않음",
+  "zh": "绝不录音",
+  "ja": "録音しません",
+  "fr": "Aucun enregistrement"
+ },
+ "p4_s": {
+  "en": "Audio is only processed in real time — never saved or sent anywhere.",
+  "ko": "오디오는 실시간으로 처리만 되고 저장되거나 전송되지 않습니다.",
+  "zh": "音频仅被实时处理，不会被保存或发送到任何地方。",
+  "ja": "音声はリアルタイムで処理されるだけで、保存や送信は一切されません。",
+  "fr": "Le son est seulement traité en temps réel — jamais enregistré ni envoyé."
+ },
+ "inst_h2": {
+  "en": "Installation",
+  "ko": "설치하기",
+  "zh": "安装方法",
+  "ja": "インストール方法",
+  "fr": "Installation"
+ },
+ "inst_sub": {
+  "en": "This is a personally distributed app that isn't notarized by Apple, so you'll need to approve it in macOS security settings the first time.",
+  "ko": "Apple 공증(Notarization)을 받지 않은 개인 배포 앱이라, 처음 한 번은 macOS의 보안 확인을 직접 통과시켜야 합니다.",
+  "zh": "这是未经 Apple 公证（Notarization）的个人发布应用，首次打开时需要在 macOS 安全设置中手动允许。",
+  "ja": "Apple の公証（Notarization）を受けていない個人配布アプリのため、初回だけ macOS のセキュリティ確認を手動で許可する必要があります。",
+  "fr": "Cette app distribuée à titre personnel n'est pas notariée par Apple : vous devrez l'autoriser dans les réglages de sécurité de macOS la première fois."
+ },
+ "s1_h": {
+  "en": "Download and move to Applications",
+  "ko": "내려받아 응용 프로그램 폴더로 옮기기",
+  "zh": "下载并移到“应用程序”",
+  "ja": "ダウンロードして「アプリケーション」へ移動",
+  "fr": "Télécharger et placer dans Applications"
+ },
+ "s1_p": {
+  "en": "Download <code>AudioMixer.zip</code> from the <a data-repo=\"releases/latest\" href=\"#\">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class=\"path\">Applications</span> folder.",
+  "ko": "<a data-repo=\"releases/latest\" href=\"#\">Releases 페이지</a>에서 <code>AudioMixer.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class=\"path\">응용 프로그램</span> 폴더로 드래그합니다.",
+  "zh": "从 <a data-repo=\"releases/latest\" href=\"#\">Releases 页面</a> 下载 <code>AudioMixer.zip</code> 并解压，然后把 <code>AudioMixer.app</code> 拖到 <span class=\"path\">应用程序</span> 文件夹。",
+  "ja": "<a data-repo=\"releases/latest\" href=\"#\">Releases ページ</a>から <code>AudioMixer.zip</code> をダウンロードして展開し、<code>AudioMixer.app</code> を <span class=\"path\">アプリケーション</span> フォルダへドラッグします。",
+  "fr": "Téléchargez <code>AudioMixer.zip</code> depuis la <a data-repo=\"releases/latest\" href=\"#\">page Releases</a>, décompressez-le, puis faites glisser <code>AudioMixer.app</code> dans le dossier <span class=\"path\">Applications</span>."
+ },
+ "s2_h": {
+  "en": "Allow the first launch",
+  "ko": "처음 실행 허용하기",
+  "zh": "允许首次打开",
+  "ja": "初回起動を許可する",
+  "fr": "Autoriser le premier lancement"
+ },
+ "s2_p1": {
+  "en": "When you open the app, macOS warns that it can't verify the developer. Click <b>Done</b>, then go to <span class=\"path\">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password.",
+  "ko": "앱을 열면 \"확인되지 않은 개발자\" 경고가 뜹니다. <b>완료</b>를 누른 뒤 <span class=\"path\">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하세요.",
+  "zh": "打开应用时，macOS 会提示无法验证开发者。点击 <b>完成</b>，然后前往 <span class=\"path\">系统设置 › 隐私与安全性</span>，点击下方的 <b>仍要打开</b> 并输入密码。",
+  "ja": "アプリを開くと「開発元を確認できません」という警告が表示されます。<b>完了</b>をクリックしたあと、<span class=\"path\">システム設定 › プライバシーとセキュリティ</span> の下のほうにある <b>このまま開く</b> をクリックし、パスワードを入力してください。",
+  "fr": "À l'ouverture, macOS indique ne pas pouvoir vérifier le développeur. Cliquez sur <b>Terminé</b>, puis ouvrez <span class=\"path\">Réglages Système › Confidentialité et sécurité</span>, cliquez sur <b>Ouvrir quand même</b> en bas de la page et saisissez votre mot de passe."
+ },
+ "s2_p2": {
+  "en": "Prefer the Terminal? This one line does the same thing.",
+  "ko": "터미널이 편하다면 아래 명령 한 줄로도 됩니다.",
+  "zh": "习惯使用终端？也可以运行下面这行命令。",
+  "ja": "ターミナルを使う場合は、次の1行でも同じことができます。",
+  "fr": "Vous préférez le Terminal ? Cette ligne fait la même chose."
+ },
+ "copy": {
+  "en": "Copy",
+  "ko": "복사",
+  "zh": "复制",
+  "ja": "コピー",
+  "fr": "Copier"
+ },
+ "copied": {
+  "en": "Copied",
+  "ko": "복사됨",
+  "zh": "已复制",
+  "ja": "コピーしました",
+  "fr": "Copié"
+ },
+ "s3_h": {
+  "en": "Allow System Audio Recording",
+  "ko": "시스템 오디오 녹음 권한 허용",
+  "zh": "允许系统录音权限",
+  "ja": "システムオーディオ録音を許可",
+  "fr": "Autoriser l'enregistrement de l'audio du système"
+ },
+ "s3_p1": {
+  "en": "A fader icon appears in the menu bar, and the app asks for permission the first time it processes sound. Click <b>Allow</b>.",
+  "ko": "메뉴 막대에 페이더 아이콘이 나타나고, 앱이 처음 소리를 처리할 때 권한을 요청합니다. <b>허용</b>을 누르세요.",
+  "zh": "菜单栏会出现推子图标，应用首次处理声音时会请求权限，请点击 <b>允许</b>。",
+  "ja": "メニューバーにフェーダーのアイコンが表示され、初めて音を処理するときに許可を求められます。<b>許可</b>をクリックしてください。",
+  "fr": "Une icône de curseurs apparaît dans la barre des menus, et l'app demande l'autorisation la première fois qu'elle traite du son. Cliquez sur <b>Autoriser</b>."
+ },
+ "s3_p2": {
+  "en": "Missed it? Turn on Audio Mixer in <span class=\"path\">System Settings › Privacy &amp; Security › Screen &amp; System Audio Recording</span>.",
+  "ko": "놓쳤다면 <span class=\"path\">시스템 설정 › 개인정보 보호 및 보안 › 화면 및 시스템 오디오 녹음</span>에서 Audio Mixer를 켜면 됩니다.",
+  "zh": "如果错过了，可以在 <span class=\"path\">系统设置 › 隐私与安全性 › 录屏与系统录音</span> 中打开 Audio Mixer。",
+  "ja": "見逃した場合は、<span class=\"path\">システム設定 › プライバシーとセキュリティ › 画面収録とシステムオーディオ録音</span> で Audio Mixer をオンにしてください。",
+  "fr": "Vous l'avez manquée ? Activez Audio Mixer dans <span class=\"path\">Réglages Système › Confidentialité et sécurité › Enregistrement de l'écran et de l'audio du système</span>."
+ },
+ "s4_h": {
+  "en": "(Optional) Launch at login",
+  "ko": "(선택) 로그인 시 자동 실행",
+  "zh": "（可选）登录时启动",
+  "ja": "（任意）ログイン時に起動",
+  "fr": "(Facultatif) Ouvrir à la connexion"
+ },
+ "s4_p": {
+  "en": "Turn on “Launch at Login” in the menu bar icon › <b>Settings</b> tab so it's ready after every restart.",
+  "ko": "메뉴 막대 아이콘 › <b>설정</b> 탭에서 \"로그인 시 실행\"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.",
+  "zh": "在菜单栏图标 › <b>设置</b> 标签页中打开“登录时启动”，重启后即可直接使用。",
+  "ja": "メニューバーのアイコン › <b>設定</b> タブで「ログイン時に起動」をオンにしておくと、再起動後もすぐに使えます。",
+  "fr": "Activez « Ouvrir à la connexion » dans l'icône de la barre des menus › onglet <b>Réglages</b> pour qu'il soit prêt après chaque redémarrage."
+ },
+ "note": {
+  "en": "<b>Your sound still works if you deny permission.</b> In that case only device volume control is available; per-app volume and EQ won't work.",
+  "ko": "<b>권한을 거부해도 소리는 정상입니다.</b> 이 경우 장치 볼륨 제어만 가능하고, 앱별 볼륨·EQ는 동작하지 않습니다.",
+  "zh": "<b>即使拒绝权限，声音也能正常播放。</b> 此时只能控制设备音量，应用独立音量和 EQ 将不可用。",
+  "ja": "<b>許可しなくても音は普通に出ます。</b> その場合はデバイス音量の操作のみ可能で、アプリ別音量と EQ は動作しません。",
+  "fr": "<b>Le son fonctionne toujours si vous refusez l'autorisation.</b> Seul le réglage du volume des périphériques est alors disponible ; le volume par app et l'EQ ne fonctionnent pas."
+ },
+ "faq_h2": {
+  "en": "Frequently Asked Questions",
+  "ko": "자주 묻는 질문",
+  "zh": "常见问题",
+  "ja": "よくある質問",
+  "fr": "Questions fréquentes"
+ },
+ "q1": {
+  "en": "Why does it need “System Audio Recording” permission?",
+  "ko": "왜 \"시스템 오디오 녹음\" 권한이 필요한가요?",
+  "zh": "为什么需要“系统录音”权限？",
+  "ja": "なぜ「システムオーディオ録音」の許可が必要なのですか？",
+  "fr": "Pourquoi l'autorisation « Enregistrement de l'audio du système » est-elle nécessaire ?"
+ },
+ "a1": {
+  "en": "To apply volume and EQ to other apps' sound, Audio Mixer has to receive and process that sound, and macOS groups this ability under the “System Audio Recording” permission. Audio Mixer only processes audio in real time; it never saves it to a file or sends it anywhere.",
+  "ko": "다른 앱의 소리에 볼륨·EQ를 적용하려면 그 소리를 받아 처리해야 하는데, macOS는 이 기능을 \"시스템 오디오 녹음\" 권한으로 묶어 두었습니다. Audio Mixer는 오디오를 실시간으로 처리만 하며 파일로 저장하거나 외부로 보내지 않습니다.",
+  "zh": "要对其他应用的声音应用音量和 EQ，必须先接收并处理这些声音，而 macOS 将此能力归入“系统录音”权限。Audio Mixer 只会实时处理音频，绝不会保存为文件或发送到外部。",
+  "ja": "ほかのアプリの音に音量や EQ を適用するにはその音を受け取って処理する必要があり、macOS はこの機能を「システムオーディオ録音」の許可にまとめています。Audio Mixer は音声をリアルタイムで処理するだけで、ファイルに保存したり外部に送信したりすることはありません。",
+  "fr": "Pour appliquer le volume et l'EQ au son des autres apps, Audio Mixer doit recevoir et traiter ce son, et macOS regroupe cette capacité sous l'autorisation « Enregistrement de l'audio du système ». Audio Mixer traite le son uniquement en temps réel ; il ne l'enregistre jamais dans un fichier et ne l'envoie nulle part."
+ },
+ "q2": {
+  "en": "If I force-quit the app, will my sound stop?",
+  "ko": "앱을 강제 종료하면 소리가 안 나오지 않나요?",
+  "zh": "强制退出应用后会没有声音吗？",
+  "ja": "アプリを強制終了したら音が出なくなりませんか？",
+  "fr": "Si je force l'app à quitter, est-ce que le son s'arrête ?"
+ },
+ "a2": {
+  "en": "No. The moment Audio Mixer quits, macOS releases its connection and every app's sound goes straight back to its original path.",
+  "ko": "아닙니다. Audio Mixer가 꺼지는 순간 macOS가 처리 연결을 해제하고, 모든 앱의 소리가 원래 경로로 즉시 돌아옵니다.",
+  "zh": "不会。Audio Mixer 一旦退出，macOS 就会解除处理连接，所有应用的声音会立即回到原来的路径。",
+  "ja": "いいえ。Audio Mixer が終了した瞬間に macOS が処理の接続を解除し、すべてのアプリの音がすぐに元の経路に戻ります。",
+  "fr": "Non. Dès qu'Audio Mixer se ferme, macOS libère la connexion et le son de chaque app reprend immédiatement son chemin d'origine."
+ },
+ "q3": {
+  "en": "Will it interfere with my DAW or audio interface?",
+  "ko": "DAW나 오디오 인터페이스를 쓰는데 간섭하지 않나요?",
+  "zh": "会干扰我的 DAW 或音频接口吗？",
+  "ja": "DAW やオーディオインターフェースに干渉しませんか？",
+  "fr": "Est-ce que cela interfère avec ma STAN (DAW) ou mon interface audio ?"
+ },
+ "a3": {
+  "en": "Apps that output directly to a device other than the current default output (for example, a DAW using an audio interface) are left alone. You can also right-click an app in the Mixer tab to exclude it from processing.",
+  "ko": "현재 기본 출력 장치가 아닌 다른 장치로 직접 출력하는 앱(예: 오디오 인터페이스를 쓰는 DAW)은 건드리지 않습니다. 필요하면 믹서 탭에서 앱을 우클릭해 처리에서 제외할 수도 있습니다.",
+  "zh": "直接输出到非当前默认输出设备的应用（例如使用音频接口的 DAW）不会受到影响。也可以在“混音器”标签页中右键点击应用，将其排除在处理之外。",
+  "ja": "現在のデフォルト出力以外のデバイスに直接出力しているアプリ（例: オーディオインターフェースを使う DAW）には手を加えません。必要に応じて、ミキサータブでアプリを右クリックして処理対象から外すこともできます。",
+  "fr": "Les apps qui envoient le son directement vers un périphérique autre que la sortie par défaut (par exemple une STAN utilisant une interface audio) ne sont pas touchées. Vous pouvez aussi faire un clic droit sur une app dans l'onglet Mixeur pour l'exclure du traitement."
+ },
+ "q4": {
+  "en": "I briefly hear the original sound when playback starts.",
+  "ko": "재생 시작 직후 잠깐 원래 소리가 들려요.",
+  "zh": "开始播放时会短暂听到原始声音。",
+  "ja": "再生を始めた直後に一瞬だけ元の音が聞こえます。",
+  "fr": "J'entends brièvement le son d'origine au début de la lecture."
+ },
+ "a4": {
+  "en": "There's a very short moment between an app starting playback and Audio Mixer picking up its sound, so you may hear unprocessed audio during that time. This is normal.",
+  "ko": "앱이 재생을 시작한 뒤 Audio Mixer가 그 소리를 이어받기까지 아주 짧은 순간이 있어, 그 사이에는 처리 전 소리가 날 수 있습니다. 정상 동작입니다.",
+  "zh": "从应用开始播放到 Audio Mixer 接管其声音之间有极短的时间，期间可能听到未经处理的声音。这是正常现象。",
+  "ja": "アプリが再生を始めてから Audio Mixer がその音を引き継ぐまでにごく短い間があるため、その間は処理前の音が聞こえることがあります。正常な動作です。",
+  "fr": "Il s'écoule un très court instant entre le début de la lecture et la prise en charge du son par Audio Mixer ; vous pouvez donc entendre le son non traité pendant ce moment. C'est normal."
+ },
+ "q5": {
+  "en": "It asks for permission again after an update.",
+  "ko": "업데이트 후 권한을 다시 물어봐요.",
+  "zh": "更新后又再次请求权限。",
+  "ja": "アップデート後にまた許可を求められます。",
+  "fr": "L'autorisation est redemandée après une mise à jour."
+ },
+ "a5": {
+  "en": "Because this personally distributed app isn't notarized, each new version has a different signature and macOS may treat it as a different app. Remove the old entry in the permission settings and allow it again.",
+  "ko": "공증받지 않은 개인 배포 앱은 새 버전마다 서명이 달라져 macOS가 다른 앱으로 인식할 수 있습니다. 권한 설정에서 기존 항목을 지우고 다시 허용해 주세요.",
+  "zh": "未经公证的个人发布应用每个新版本的签名都会不同，macOS 可能将其视为另一个应用。请在权限设置中删除旧条目后重新允许。",
+  "ja": "公証を受けていない個人配布アプリは新しいバージョンごとに署名が変わり、macOS が別のアプリとして認識することがあります。許可の設定で古い項目を削除してから、もう一度許可してください。",
+  "fr": "Cette app distribuée à titre personnel n'étant pas notariée, chaque nouvelle version a une signature différente et macOS peut la considérer comme une autre app. Supprimez l'ancienne entrée dans les réglages d'autorisation, puis autorisez-la de nouveau."
+ },
+ "q6": {
+  "en": "Where do I report bugs?",
+  "ko": "버그는 어디로 알리나요?",
+  "zh": "如何反馈问题？",
+  "ja": "バグはどこに報告すればいいですか？",
+  "fr": "Où signaler un bug ?"
+ },
+ "a6": {
+  "en": "Please open a <a data-repo=\"issues\" href=\"#\">GitHub Issue</a> with your macOS version, the output device you use and the steps to reproduce. You can also email <a href=\"mailto:jayusop@gmail.com\">jayusop@gmail.com</a>.",
+  "ko": "<a data-repo=\"issues\" href=\"#\">GitHub Issues</a>에 macOS 버전, 사용 중인 출력 장치, 재현 방법을 남겨 주세요. 메일은 <a href=\"mailto:jayusop@gmail.com\">jayusop@gmail.com</a>.",
+  "zh": "请在 <a data-repo=\"issues\" href=\"#\">GitHub Issues</a> 中注明 macOS 版本、使用的输出设备和复现步骤。也可以发送邮件至 <a href=\"mailto:jayusop@gmail.com\">jayusop@gmail.com</a>。",
+  "ja": "<a data-repo=\"issues\" href=\"#\">GitHub Issues</a> に macOS のバージョン、使用している出力デバイス、再現手順を書いてお知らせください。メールは <a href=\"mailto:jayusop@gmail.com\">jayusop@gmail.com</a> まで。",
+  "fr": "Ouvrez une <a data-repo=\"issues\" href=\"#\">issue GitHub</a> en indiquant votre version de macOS, le périphérique de sortie utilisé et les étapes pour reproduire le problème. Vous pouvez aussi écrire à <a href=\"mailto:jayusop@gmail.com\">jayusop@gmail.com</a>."
+ },
+ "foot_eq": {
+  "en": "EQ profile data: <a href=\"https://github.com/jaakkopasanen/AutoEq\">AutoEq (jaakkopasanen)</a>",
+  "ko": "EQ 프로필 데이터: <a href=\"https://github.com/jaakkopasanen/AutoEq\">AutoEq (jaakkopasanen)</a>",
+  "zh": "EQ 配置数据：<a href=\"https://github.com/jaakkopasanen/AutoEq\">AutoEq (jaakkopasanen)</a>",
+  "ja": "EQ プロファイルデータ: <a href=\"https://github.com/jaakkopasanen/AutoEq\">AutoEq (jaakkopasanen)</a>",
+  "fr": "Données des profils EQ : <a href=\"https://github.com/jaakkopasanen/AutoEq\">AutoEq (jaakkopasanen)</a>"
+ },
+ "lang_label": {
+  "en": "Language",
+  "ko": "언어",
+  "zh": "语言",
+  "ja": "言語",
+  "fr": "Langue"
+ }
+};
+  const SUPPORTED = ["ko", "en", "zh", "ja", "fr"];
+  const HTML_LANG = { en: "en", ko: "ko", zh: "zh-Hans", ja: "ja", fr: "fr" };
+
+  function pickLanguage() {
+    // 1) ?lang=xx in the URL  2) the visitor's own earlier choice
+    // 3) Korean if Korean is anywhere in the browser/OS language list
+    // 4) otherwise the first supported language in that list  5) Korean (default)
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q && SUPPORTED.includes(q)) return q;
+    try {
+      const saved = localStorage.getItem("am-lang");
+      if (saved && SUPPORTED.includes(saved)) return saved;
+    } catch (e) {}
+    const prefs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "ko"])
+      .map(t => String(t).toLowerCase().split("-")[0]);
+    if (prefs.includes("ko")) return "ko";
+    for (const base of prefs) {
+      if (SUPPORTED.includes(base)) return base;
+    }
+    return "ko";
+  }
+
+  // CJK web fonts so Chinese/Japanese also render cleanly on Windows/Linux (Macs use system fonts)
+  const FONT_URL = {
+    ja: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap",
+    zh: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap"
+  };
+  function ensureFont(lang) {
+    if (!FONT_URL[lang] || document.getElementById("font-" + lang)) return;
+    const l = document.createElement("link");
+    l.id = "font-" + lang; l.rel = "stylesheet"; l.href = FONT_URL[lang];
+    document.head.appendChild(l);
+  }
+
+  function applyRepoLinks() {
+    const base = "https://github.com/" + REPO;
+    document.querySelectorAll("[data-repo]").forEach(a => {
+      const p = a.getAttribute("data-repo");
+      a.href = p ? base + "/" + p : base;
+    });
+  }
+
+  function setLanguage(lang) {
+    const tr = k => (I18N[k] && (I18N[k][lang] || I18N[k].ko)) || "";
+    ensureFont(lang);
+    document.documentElement.lang = HTML_LANG[lang];
+    document.title = tr("meta_title");
+    document.querySelector('meta[name="description"]').setAttribute("content", tr("meta_desc"));
+    document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = tr(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-alt]").forEach(el => { el.alt = tr(el.dataset.i18nAlt); });
+    document.querySelectorAll("[data-i18n-aria]").forEach(el => { el.setAttribute("aria-label", tr(el.dataset.i18nAria)); });
+    const sel = document.getElementById("lang");
+    sel.value = lang;
+    sel.setAttribute("aria-label", tr("lang_label"));
+    applyRepoLinks();   // translated text may contain new links
+    window.__lang = lang;
+  }
+
+  document.getElementById("lang").addEventListener("change", e => {
+    const lang = e.target.value;
+    try { localStorage.setItem("am-lang", lang); } catch (err) {}
+    const url = new URL(location.href);
+    url.searchParams.delete("lang");
+    history.replaceState(null, "", url);
+    setLanguage(lang);
+  });
+
+  document.querySelectorAll(".copy").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = btn.parentElement.querySelector("code").innerText.trim();
+      const tr = k => I18N[k][window.__lang] || I18N[k].ko;
+      navigator.clipboard?.writeText(text).then(() => {
+        btn.textContent = tr("copied");
+        setTimeout(() => btn.textContent = tr("copy"), 1500);
+      }).catch(() => {});
+    });
+  });
+
+  setLanguage(pickLanguage());
+</script>
+</body>
+</html>
