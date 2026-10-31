@@ -25,12 +25,12 @@
 Une app macOS qui vit dans la barre des menus et offre un **volume par app**, le **volume des périphériques d'entrée/sortie**, un **égaliseur graphique/paramétrique** et des **profils de correction de casque AutoEQ**. Aucun pilote audio virtuel requis.
 
 > Configuration requise : macOS 14.2 ou version ultérieure (Apple Silicon / Intel)<br>
-> 🌐 La langue de l'app suit la langue système de macOS (coréen, anglais, chinois, japonais). Les autres langues s'affichent en anglais.
+> 🌐 La langue de l'app suit la langue système de macOS : coréen, anglais (US/UK), chinois (simplifié), japonais, français. Les autres langues s'affichent en anglais.
 
 ## Installation
 
-1. Téléchargez `AudioMixer.zip` depuis [Releases](https://github.com/jayusop/Audio-Mixer/releases/latest), décompressez-le et placez `AudioMixer.app` dans le dossier **Applications**.
-2. À la première ouverture, macOS indique ne pas pouvoir vérifier le développeur (cette app distribuée à titre personnel n'est pas notariée par Apple). Cliquez sur **Terminé**, puis sur **Ouvrir quand même** en bas de **Réglages Système › Confidentialité et sécurité**. Ou, dans le Terminal :
+1. Téléchargez `AudioMixer.app.zip` depuis [Releases](https://github.com/jayusop/Audio-Mixer/releases/latest), décompressez-le et placez `AudioMixer.app` dans le dossier **Applications**.
+2. À la première ouverture, macOS affiche un avertissement de sécurité (cette app distribuée à titre personnel n'est pas notariée par Apple). Ne cliquez pas sur **Placer dans la corbeille** : fermez-le avec **Terminé** (**Annuler** sous macOS 14), puis cliquez sur **Ouvrir quand même** en bas de **Réglages Système › Confidentialité et sécurité**. Ou, dans le Terminal :
    ```bash
    xattr -dr com.apple.quarantine /Applications/AudioMixer.app
    ```
@@ -45,10 +45,10 @@ Une app macOS qui vit dans la barre des menus et offre un **volume par app**, le
 | Mixeur | Choix des périphériques de sortie/d'entrée, volume matériel et coupure du son, volume logiciel pour les périphériques sans volume matériel (ex. HDMI) |
 | Volume par app | Détection automatique des apps en lecture, 0–100 % (200 % en option), coupure du son, vumètres, réglages mémorisés par app, exclusion du traitement |
 | Égaliseur | EQ graphique 10 bandes (±12 dB), jusqu'à 32 filtres paramétriques (PK/LSC/HSC/LP/HP/NO), courbe de réponse en fréquence, édition par glisser-déposer |
-| AutoEQ | Recherche et application en ligne dans la base AutoEQ (~8 800 casques/écouteurs), import/export de ParametricEQ.txt |
+| AutoEQ | Recherche et application en ligne dans la base AutoEQ (~8 800 casques/écouteurs, connexion Internet requise), import/export de ParametricEQ.txt |
 | Préréglages | 17 intégrés + préréglages personnels (enregistrer/remplacer/supprimer), **bascule automatique selon le périphérique de sortie** |
 | Protection du son | Préampli automatique (atténue de l'amplification maximale), limiteur de crête, protection contre l'écrêtage, balance G/D |
-| Divers | Ouverture à la connexion, interrupteur général du traitement, interface en coréen · anglais · chinois · japonais |
+| Divers | Ouverture à la connexion, interrupteur général du traitement, interface en coréen · anglais (US/UK) · chinois (simplifié) · japonais · français |
 
 ## En toute sérénité
 

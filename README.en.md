@@ -25,12 +25,12 @@
 A macOS app that lives in the menu bar and gives you **per-app volume**, **input/output device volume**, a **graphic/parametric equalizer**, and **AutoEQ headphone correction profiles**. No virtual audio driver required.
 
 > Requirements: macOS 14.2 or later (Apple Silicon / Intel)<br>
-> 🌐 The app's language follows your macOS system language (Korean, English, Chinese, Japanese). Other languages are shown in English.
+> 🌐 The app's language follows your macOS system language: Korean, English (US/UK), Chinese (Simplified), Japanese, French. Other languages are shown in English.
 
 ## Installation
 
-1. Download `AudioMixer.zip` from [Releases](https://github.com/jayusop/Audio-Mixer/releases/latest), unzip it, and move `AudioMixer.app` into your **Applications** folder.
-2. The first time you open it, macOS warns that it can't verify the developer (this personally distributed app isn't notarized by Apple). Click **Done**, then click **Open Anyway** near the bottom of **System Settings › Privacy & Security**. Or, in Terminal:
+1. Download `AudioMixer.app.zip` from [Releases](https://github.com/jayusop/Audio-Mixer/releases/latest), unzip it, and move `AudioMixer.app` into your **Applications** folder.
+2. The first time you open it, macOS shows a security warning (this personally distributed app isn't notarized by Apple). Don't click **Move to Trash** — close it with **Done** (**Cancel** on macOS 14), then click **Open Anyway** near the bottom of **System Settings › Privacy & Security**. Or, in Terminal:
    ```bash
    xattr -dr com.apple.quarantine /Applications/AudioMixer.app
    ```
@@ -45,10 +45,10 @@ A macOS app that lives in the menu bar and gives you **per-app volume**, **input
 | Mixer | Output/input device selection, hardware volume & mute, software volume for devices without hardware volume (e.g. HDMI) |
 | Per-app volume | Auto-detects playing apps, 0–100% (optionally 200%), mute, level meters, remembers per-app settings, exclude from processing |
 | Equalizer | 10-band graphic EQ (±12 dB), up to 32 parametric filters (PK/LSC/HSC/LP/HP/NO), frequency response curve, drag editing |
-| AutoEQ | Search and apply from the AutoEQ database (~8,800 headphones/earphones) online, import/export ParametricEQ.txt |
+| AutoEQ | Search and apply from the AutoEQ database (~8,800 headphones/earphones) online (internet connection required), import/export ParametricEQ.txt |
 | Presets | 17 built-in + user presets (save/overwrite/delete), **automatic preset switching per output device** |
 | Sound protection | Auto preamp (attenuates by the max boost), peak limiter, hard-clip protection, L/R balance |
-| Other | Launch at login, global processing on/off switch, Korean · English · Chinese · Japanese UI |
+| Other | Launch at login, global processing on/off switch, Korean · English (US/UK) · Chinese (Simplified) · Japanese · French UI |
 
 ## Peace of mind
 

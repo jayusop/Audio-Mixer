@@ -185,7 +185,7 @@
       <h1 data-i18n="hero_h1">앱마다 다른 볼륨,<br><span class="g">메뉴 막대 한 곳에서.</span></h1>
       <p data-i18n="hero_lead" class="lead">macOS 메뉴 막대에 상주하는 오디오 믹서입니다. 앱별 볼륨, 10밴드·파라메트릭 이퀄라이저, AutoEQ 헤드폰 보정까지 — 가상 오디오 드라이버 설치 없이 동작합니다.</p>
       <div class="cta">
-        <a class="btn primary" data-repo="releases/latest/download/AudioMixer.zip" href="#">
+        <a class="btn primary" data-repo="releases/latest/download/AudioMixer.app.zip" href="#">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
           <span data-i18n="btn_download">최신 버전 다운로드</span>
         </a>
@@ -249,7 +249,7 @@
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/></svg></div>
         <h3 data-i18n="f4_h">AutoEQ 헤드폰 보정</h3>
-        <p data-i18n="f4_p">AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다. ParametricEQ.txt 가져오기/내보내기 지원.</p>
+        <p data-i18n="f4_p">AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다(인터넷 연결 필요). ParametricEQ.txt 가져오기/내보내기 지원.</p>
       </div>
       <div class="feat">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg></div>
@@ -296,11 +296,11 @@
     <div class="steps">
       <div class="step"><div>
         <h3 data-i18n="s1_h">내려받아 응용 프로그램 폴더로 옮기기</h3>
-        <p data-i18n="s1_p"><a data-repo="releases/latest" href="#">Releases 페이지</a>에서 <code>AudioMixer.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class="path">응용 프로그램</span> 폴더로 드래그합니다.</p>
+        <p data-i18n="s1_p"><a data-repo="releases/latest" href="#">Releases 페이지</a>에서 <code>AudioMixer.app.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class="path">응용 프로그램</span> 폴더로 드래그합니다.</p>
       </div></div>
       <div class="step"><div>
         <h3 data-i18n="s2_h">처음 실행 허용하기</h3>
-        <p data-i18n="s2_p1">앱을 열면 "확인되지 않은 개발자" 경고가 뜹니다. <b>완료</b>를 누른 뒤 <span class="path">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하세요.</p>
+        <p data-i18n="s2_p1">처음 열면 macOS가 보안 경고를 띄웁니다. <b>휴지통으로 이동</b>은 누르지 말고 <b>완료</b>(macOS 14에서는 <b>취소</b>)로 창을 닫으세요. 그다음 <span class="path">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하면 됩니다.</p>
         <p data-i18n="s2_p2">터미널이 편하다면 아래 명령 한 줄로도 됩니다.</p>
         <pre><button class="copy" data-i18n="copy">복사</button><code>xattr -dr com.apple.quarantine /Applications/AudioMixer.app</code></pre>
       </div></div>
@@ -311,7 +311,7 @@
       </div></div>
       <div class="step"><div>
         <h3 data-i18n="s4_h">(선택) 로그인 시 자동 실행</h3>
-        <p data-i18n="s4_p">메뉴 막대 아이콘 › <b>설정</b> 탭에서 "로그인 시 실행"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.</p>
+        <p data-i18n="s4_p">메뉴 막대 아이콘 › <b>설정</b> 탭에서 "로그인 시 자동 실행"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.</p>
       </div></div>
     </div>
     <div data-i18n="note" class="note"><b>권한을 거부해도 소리는 정상입니다.</b> 이 경우 장치 볼륨 제어만 가능하고, 앱별 볼륨·EQ는 동작하지 않습니다.</div>
@@ -576,12 +576,12 @@
   "en-GB": "AutoEQ Headphone Correction"
  },
  "f4_p": {
-  "en": "Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly. Import/export ParametricEQ.txt.",
-  "ko": "AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다. ParametricEQ.txt 가져오기/내보내기 지원.",
-  "zh": "在应用内搜索 AutoEQ 数据库中约 8,800 款耳机配置并一键应用。支持导入/导出 ParametricEQ.txt。",
-  "ja": "AutoEQ データベースにある約 8,800 件のヘッドホン・イヤホンのプロファイルをアプリ内で検索してすぐに適用。ParametricEQ.txt の読み込み/書き出しにも対応。",
-  "fr": "Recherchez parmi environ 8 800 profils de casques et d'écouteurs de la base AutoEQ directement dans l'app, et appliquez-les en un clic. Import/export de ParametricEQ.txt.",
-  "en-GB": "Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly. Import/export ParametricEQ.txt."
+  "en": "Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly (internet connection required). Import/export ParametricEQ.txt.",
+  "ko": "AutoEQ 데이터베이스의 약 8,800개 헤드폰·이어폰 프로필을 앱 안에서 검색해 바로 적용합니다(인터넷 연결 필요). ParametricEQ.txt 가져오기/내보내기 지원.",
+  "zh": "在应用内搜索 AutoEQ 数据库中约 8,800 款耳机配置并一键应用（需要联网）。支持导入/导出 ParametricEQ.txt。",
+  "ja": "AutoEQ データベースにある約 8,800 件のヘッドホン・イヤホンのプロファイルをアプリ内で検索してすぐに適用（インターネット接続が必要）。ParametricEQ.txt の読み込み/書き出しにも対応。",
+  "fr": "Recherchez parmi environ 8 800 profils de casques et d'écouteurs de la base AutoEQ directement dans l'app, et appliquez-les en un clic (connexion Internet requise). Import/export de ParametricEQ.txt.",
+  "en-GB": "Search about 8,800 headphone and earphone profiles from the AutoEQ database right inside the app and apply them instantly (internet connection required). Import/export ParametricEQ.txt."
  },
  "f5_h": {
   "en": "Presets & Per-Device Switching",
@@ -776,12 +776,12 @@
   "en-GB": "Download and move to Applications"
  },
  "s1_p": {
-  "en": "Download <code>AudioMixer.zip</code> from the <a data-repo=\"releases/latest\" href=\"#\">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class=\"path\">Applications</span> folder.",
-  "ko": "<a data-repo=\"releases/latest\" href=\"#\">Releases 페이지</a>에서 <code>AudioMixer.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class=\"path\">응용 프로그램</span> 폴더로 드래그합니다.",
-  "zh": "从 <a data-repo=\"releases/latest\" href=\"#\">Releases 页面</a> 下载 <code>AudioMixer.zip</code> 并解压，然后把 <code>AudioMixer.app</code> 拖到 <span class=\"path\">应用程序</span> 文件夹。",
-  "ja": "<a data-repo=\"releases/latest\" href=\"#\">Releases ページ</a>から <code>AudioMixer.zip</code> をダウンロードして展開し、<code>AudioMixer.app</code> を <span class=\"path\">アプリケーション</span> フォルダへドラッグします。",
-  "fr": "Téléchargez <code>AudioMixer.zip</code> depuis la <a data-repo=\"releases/latest\" href=\"#\">page Releases</a>, décompressez-le, puis faites glisser <code>AudioMixer.app</code> dans le dossier <span class=\"path\">Applications</span>.",
-  "en-GB": "Download <code>AudioMixer.zip</code> from the <a data-repo=\"releases/latest\" href=\"#\">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class=\"path\">Applications</span> folder."
+  "en": "Download <code>AudioMixer.app.zip</code> from the <a data-repo=\"releases/latest\" href=\"#\">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class=\"path\">Applications</span> folder.",
+  "ko": "<a data-repo=\"releases/latest\" href=\"#\">Releases 페이지</a>에서 <code>AudioMixer.app.zip</code>을 받아 압축을 풀고, <code>AudioMixer.app</code>을 <span class=\"path\">응용 프로그램</span> 폴더로 드래그합니다.",
+  "zh": "从 <a data-repo=\"releases/latest\" href=\"#\">Releases 页面</a> 下载 <code>AudioMixer.app.zip</code> 并解压，然后把 <code>AudioMixer.app</code> 拖到 <span class=\"path\">应用程序</span> 文件夹。",
+  "ja": "<a data-repo=\"releases/latest\" href=\"#\">Releases ページ</a>から <code>AudioMixer.app.zip</code> をダウンロードして展開し、<code>AudioMixer.app</code> を <span class=\"path\">アプリケーション</span> フォルダへドラッグします。",
+  "fr": "Téléchargez <code>AudioMixer.app.zip</code> depuis la <a data-repo=\"releases/latest\" href=\"#\">page Releases</a>, décompressez-le, puis faites glisser <code>AudioMixer.app</code> dans le dossier <span class=\"path\">Applications</span>.",
+  "en-GB": "Download <code>AudioMixer.app.zip</code> from the <a data-repo=\"releases/latest\" href=\"#\">Releases page</a>, unzip it, and drag <code>AudioMixer.app</code> into your <span class=\"path\">Applications</span> folder."
  },
  "s2_h": {
   "en": "Allow the first launch",
@@ -792,12 +792,12 @@
   "en-GB": "Allow the first launch"
  },
  "s2_p1": {
-  "en": "When you open the app, macOS warns that it can't verify the developer. Click <b>Done</b>, then go to <span class=\"path\">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password.",
-  "ko": "앱을 열면 \"확인되지 않은 개발자\" 경고가 뜹니다. <b>완료</b>를 누른 뒤 <span class=\"path\">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하세요.",
-  "zh": "打开应用时，macOS 会提示无法验证开发者。点击 <b>完成</b>，然后前往 <span class=\"path\">系统设置 › 隐私与安全性</span>，点击下方的 <b>仍要打开</b> 并输入密码。",
-  "ja": "アプリを開くと「開発元を確認できません」という警告が表示されます。<b>完了</b>をクリックしたあと、<span class=\"path\">システム設定 › プライバシーとセキュリティ</span> の下のほうにある <b>このまま開く</b> をクリックし、パスワードを入力してください。",
-  "fr": "À l'ouverture, macOS indique ne pas pouvoir vérifier le développeur. Cliquez sur <b>Terminé</b>, puis ouvrez <span class=\"path\">Réglages Système › Confidentialité et sécurité</span>, cliquez sur <b>Ouvrir quand même</b> en bas de la page et saisissez votre mot de passe.",
-  "en-GB": "When you open the app, macOS warns that it can't verify the developer. Click <b>Done</b>, then go to <span class=\"path\">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password."
+  "en": "The first time you open it, macOS shows a security warning. Don't click <b>Move to Trash</b> — close it with <b>Done</b> (<b>Cancel</b> on macOS 14). Then go to <span class=\"path\">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password.",
+  "ko": "처음 열면 macOS가 보안 경고를 띄웁니다. <b>휴지통으로 이동</b>은 누르지 말고 <b>완료</b>(macOS 14에서는 <b>취소</b>)로 창을 닫으세요. 그다음 <span class=\"path\">시스템 설정 › 개인정보 보호 및 보안</span> 아래쪽의 <b>그래도 열기</b>를 클릭하고 암호를 입력하면 됩니다.",
+  "zh": "首次打开时，macOS 会显示安全警告。请不要点击 <b>移到废纸篓</b>，点击 <b>完成</b>（macOS 14 上为 <b>取消</b>）关闭窗口。然后前往 <span class=\"path\">系统设置 › 隐私与安全性</span>，点击下方的 <b>仍要打开</b> 并输入密码。",
+  "ja": "初めて開くと macOS がセキュリティの警告を表示します。<b>ゴミ箱に入れる</b>は押さずに、<b>完了</b>（macOS 14 では<b>キャンセル</b>）で閉じてください。続いて <span class=\"path\">システム設定 › プライバシーとセキュリティ</span> の下のほうにある <b>このまま開く</b> をクリックし、パスワードを入力します。",
+  "fr": "À la première ouverture, macOS affiche un avertissement de sécurité. Ne cliquez pas sur <b>Placer dans la corbeille</b> : fermez-le avec <b>Terminé</b> (<b>Annuler</b> sous macOS 14). Ouvrez ensuite <span class=\"path\">Réglages Système › Confidentialité et sécurité</span>, cliquez sur <b>Ouvrir quand même</b> en bas de la page et saisissez votre mot de passe.",
+  "en-GB": "The first time you open it, macOS shows a security warning. Don't click <b>Move to Bin</b> — close it with <b>Done</b> (<b>Cancel</b> on macOS 14). Then go to <span class=\"path\">System Settings › Privacy &amp; Security</span>, click <b>Open Anyway</b> near the bottom, and enter your password."
  },
  "s2_p2": {
   "en": "Prefer the Terminal? This one line does the same thing.",
@@ -857,7 +857,7 @@
  },
  "s4_p": {
   "en": "Turn on “Launch at Login” in the menu bar icon › <b>Settings</b> tab so it's ready after every restart.",
-  "ko": "메뉴 막대 아이콘 › <b>설정</b> 탭에서 \"로그인 시 실행\"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.",
+  "ko": "메뉴 막대 아이콘 › <b>설정</b> 탭에서 \"로그인 시 자동 실행\"을 켜 두면 재부팅 후에도 바로 쓸 수 있습니다.",
   "zh": "在菜单栏图标 › <b>设置</b> 标签页中打开“登录时启动”，重启后即可直接使用。",
   "ja": "メニューバーのアイコン › <b>設定</b> タブで「ログイン時に起動」をオンにしておくと、再起動後もすぐに使えます。",
   "fr": "Activez « Ouvrir à la connexion » dans l'icône de la barre des menus › onglet <b>Réglages</b> pour qu'il soit prêt après chaque redémarrage.",
