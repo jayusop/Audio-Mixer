@@ -1,0 +1,76 @@
+Audio Mixer Freeware License
+Version 1.0 — 31 October 2026
+
+Copyright (c) 2026 jayusop (jayusop@gmail.com). All rights reserved.
+
+This license applies to the Audio Mixer application for macOS, in the compiled
+form published at https://github.com/jayusop/Audio-Mixer/releases, together with
+its documentation (the "Software"). The source code of the Software is not
+distributed and is not covered by this license.
+
+1. FREE FOR EVERYONE
+
+   The author grants you a free, non-exclusive, worldwide, royalty-free and
+   perpetual license to download, install, run and copy the Software on any
+   number of computers, for any purpose — personal, educational, non-profit,
+   government or commercial, including use by companies and other organisations
+   of any size. No fee, registration or license key is required.
+
+2. REDISTRIBUTION
+
+   You may redistribute copies of the Software free of charge, provided that the
+   Software is distributed unmodified, exactly as published by the author, and
+   that this license and the copyright notice are kept with it.
+
+3. THE ONLY RESTRICTION: NO REVERSE ENGINEERING
+
+   You may not reverse engineer, decompile, disassemble, or otherwise attempt to
+   derive the source code, internal structure or algorithms of the Software, and
+   you may not modify, patch or create derivative works of the Software's
+   binaries. This restriction applies only to the extent permitted by the law
+   that applies to you; where such law expressly grants a right that cannot be
+   waived by contract (for example, reverse engineering strictly necessary for
+   interoperability), that right is not limited by this license.
+
+4. OWNERSHIP
+
+   The Software is licensed, not sold. The author keeps all copyright and other
+   intellectual property rights in the Software. The names "Audio Mixer" and the
+   Software's icon remain the property of the author.
+
+5. PRIVACY
+
+   The Software processes audio on your computer in real time and does not
+   record, store or transmit it. The Software does not collect personal data. It
+   connects to the internet only to download headphone profile data from the
+   AutoEq project on GitHub when you use the AutoEQ feature.
+
+6. THIRD-PARTY DATA
+
+   Headphone correction profiles are provided by the AutoEq project
+   (https://github.com/jaakkopasanen/AutoEq, by Jaakko Pasanen) under its own
+   license (MIT). They are downloaded from that project at run time and are not
+   part of the Software.
+
+7. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+8. LIMITATION OF LIABILITY
+
+   TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+   WITH THE SOFTWARE OR THE USE OF OR OTHER DEALINGS IN THE SOFTWARE.
+
+9. TERMINATION
+
+   If you break the terms of this license, your rights under it end
+   automatically. Sections 4 to 8 continue to apply after termination.
+
+10. TRANSLATIONS
+
+   Translations of this license are provided for convenience only. If a
+   translation differs from this English text, this English text prevails.

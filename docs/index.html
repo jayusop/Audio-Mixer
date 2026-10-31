@@ -146,6 +146,18 @@
   pre code{font:inherit;color:inherit;background:none;padding:0}
   /* line breaking: never split Korean words; proper CJK punctuation rules; balanced headings */
   .nw{white-space:nowrap}
+  /* license */
+  .lic{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .lic-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .lic-card h3{margin:0 0 10px;font-size:17px}
+  .lic-card p{margin:0;color:var(--muted);font-size:14.5px}
+  .lic-card ul{margin:0;padding-left:18px;color:var(--muted);font-size:14.5px}
+  .lic-card li{margin:4px 0}
+  .lic-card.ok{border-color:rgba(95,225,242,.35)}
+  .lic-card.ok h3{color:var(--cyan)}
+  .lic-card.no{border-color:rgba(255,111,182,.35)}
+  .lic-card.no h3{color:var(--pink)}
+  .lic-more{margin:18px 0 0;font-size:14.5px}
   h1,h2,h3{text-wrap:balance}
   html:lang(ko) body{word-break:keep-all;overflow-wrap:break-word}
   html:lang(ja) body,html:lang(zh-Hans) body{line-break:strict;overflow-wrap:break-word}
@@ -161,6 +173,7 @@
     <div class="links">
       <a href="#features" data-i18n="nav_features">기능</a>
       <a href="#install" data-i18n="nav_install">설치</a>
+      <a href="#license" data-i18n="nav_license">라이선스</a>
       <a href="#faq">FAQ</a>
       <a class="gh" data-repo="" href="#">GitHub ↗</a>
     </div>
@@ -194,7 +207,7 @@
           <span data-i18n="btn_releases">모든 버전 · 변경 내역</span>
         </a>
       </div>
-      <p data-i18n="req" class="req"><b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · 무료</p>
+      <p data-i18n="req" class="req"><b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · <b>개인·기업 모두 무료</b></p>
     </div>
 
     <div class="mock" aria-label="앱 화면 예시" data-i18n-aria="mock_label">
@@ -318,6 +331,20 @@
   </div>
 </section>
 
+<section id="license">
+  <div class="wrap">
+    <div class="eyebrow">License</div>
+    <h2 data-i18n="lic_h2">완전 무료입니다. 개인도, 기업도.</h2>
+    <p data-i18n="lic_sub" class="sub">Audio Mixer는 프리웨어입니다. 요금, 등록, 라이선스 키 없이 누구나 어떤 용도로든 쓸 수 있습니다.</p>
+    <div class="lic">
+      <div class="lic-card ok"><h3 data-i18n="lic_ok_h">할 수 있는 것</h3><div data-i18n="lic_ok_p"><ul><li>개인·가정에서 사용</li><li>회사·기관·학교 등 업무용·상업적 사용 (대수 제한 없음)</li><li>수정하지 않은 원본을 라이선스와 함께 무료로 재배포</li></ul></div></div>
+      <div class="lic-card no"><h3 data-i18n="lic_no_h">유일하게 금지되는 것</h3><p data-i18n="lic_no_p"><b>리버스 엔지니어링.</b> 디컴파일·디스어셈블 등으로 소스 코드나 내부 구조를 알아내거나, 실행 파일을 수정·패치하는 것은 허용되지 않습니다. (법이 계약으로 제한할 수 없다고 정한 범위는 예외)</p></div>
+      <div class="lic-card"><h3 data-i18n="lic_war_h">알아 두세요</h3><p data-i18n="lic_war_p">소프트웨어는 "있는 그대로" 제공되며 어떠한 보증도 하지 않습니다. 저작권은 저작자에게 있고, 소스 코드는 공개하지 않습니다. 개인정보는 수집하지 않습니다.</p></div>
+    </div>
+    <p class="lic-more"><a id="lic-link" href="#" data-i18n="lic_link">라이선스 전문 읽기 →</a></p>
+  </div>
+</section>
+
 <section id="faq">
   <div class="wrap">
     <div class="eyebrow">FAQ</div>
@@ -341,7 +368,7 @@
   <div class="wrap">
     <span>© 2026 jayusop · Audio Mixer</span>
     <span data-i18n="foot_eq">EQ 프로필 데이터: <a href="https://github.com/jaakkopasanen/AutoEq">AutoEq (jaakkopasanen)</a></span>
-    <span><a data-repo="" href="#">GitHub</a> · <a data-repo="releases" href="#">Releases</a> · <a data-repo="issues" href="#">Issues</a></span>
+    <span><a data-repo="" href="#">GitHub</a> · <a data-repo="releases" href="#">Releases</a> · <a data-repo="issues" href="#">Issues</a> · <a class="lic-foot" href="#" data-i18n="nav_license">라이선스</a></span>
   </div>
 </footer>
 
@@ -424,12 +451,12 @@
   "en-GB": "All Versions · Changelog"
  },
  "req": {
-  "en": "<b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · Free",
-  "ko": "<b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · 무료",
-  "zh": "<b>macOS 14.2 Sonoma</b> 或更高版本 · Apple 芯片 / Intel · 免费",
-  "ja": "<b>macOS 14.2 Sonoma</b> 以降 · Apple シリコン / Intel · 無料",
-  "fr": "<b>macOS 14.2 Sonoma</b> ou version ultérieure · Apple Silicon / Intel · Gratuit",
-  "en-GB": "<b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · Free"
+  "en": "<b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · <b>Free for personal &amp; business use</b>",
+  "ko": "<b>macOS 14.2 Sonoma</b> 이상 · Apple Silicon / Intel · <b>개인·기업 모두 무료</b>",
+  "zh": "<b>macOS 14.2 Sonoma</b> 或更高版本 · Apple 芯片 / Intel · <b>个人与企业均可免费使用</b>",
+  "ja": "<b>macOS 14.2 Sonoma</b> 以降 · Apple シリコン / Intel · <b>個人・企業とも無料</b>",
+  "fr": "<b>macOS 14.2 Sonoma</b> ou version ultérieure · Apple Silicon / Intel · <b>Gratuit pour les particuliers et les entreprises</b>",
+  "en-GB": "<b>macOS 14.2 Sonoma</b> or later · Apple Silicon / Intel · <b>Free for personal &amp; business use</b>"
  },
  "mock_label": {
   "en": "App screen example",
@@ -990,8 +1017,89 @@
   "ja": "言語",
   "fr": "Langue",
   "en-GB": "Language"
+ },
+ "nav_license": {
+  "ko": "라이선스",
+  "en": "License",
+  "en-GB": "Licence",
+  "zh": "许可",
+  "ja": "ライセンス",
+  "fr": "Licence"
+ },
+ "lic_h2": {
+  "ko": "완전 무료입니다. 개인도, 기업도.",
+  "en": "Completely free. For individuals and businesses.",
+  "en-GB": "Completely free. For individuals and businesses.",
+  "zh": "完全免费，个人和企业皆可。",
+  "ja": "完全無料。個人でも、企業でも。",
+  "fr": "Entièrement gratuit. Pour les particuliers comme pour les entreprises."
+ },
+ "lic_sub": {
+  "ko": "Audio Mixer는 프리웨어입니다. 요금, 등록, 라이선스 키 없이 누구나 어떤 용도로든 쓸 수 있습니다.",
+  "en": "Audio Mixer is freeware. Anyone can use it for any purpose — no fee, no registration, no license key.",
+  "en-GB": "Audio Mixer is freeware. Anyone can use it for any purpose — no fee, no registration, no licence key.",
+  "zh": "Audio Mixer 是免费软件。任何人都可以出于任何目的使用 —— 无需付费、注册或许可证密钥。",
+  "ja": "Audio Mixer はフリーウェアです。料金・登録・ライセンスキーは不要で、誰でもどんな用途にも使えます。",
+  "fr": "Audio Mixer est un logiciel gratuit. Tout le monde peut l'utiliser à toutes fins — sans frais, sans inscription, sans clé de licence."
+ },
+ "lic_ok_h": {
+  "ko": "할 수 있는 것",
+  "en": "You can",
+  "en-GB": "You can",
+  "zh": "您可以",
+  "ja": "できること",
+  "fr": "Vous pouvez"
+ },
+ "lic_ok_p": {
+  "ko": "<ul><li>개인·가정에서 사용</li><li>회사·기관·학교 등 업무용·상업적 사용 (대수 제한 없음)</li><li>수정하지 않은 원본을 라이선스와 함께 무료로 재배포</li></ul>",
+  "en": "<ul><li>Use it at home, for personal use</li><li>Use it at work — companies, organisations, schools, commercial use (any number of Macs)</li><li>Share unmodified copies free of charge, together with the license</li></ul>",
+  "en-GB": "<ul><li>Use it at home, for personal use</li><li>Use it at work — companies, organisations, schools, commercial use (any number of Macs)</li><li>Share unmodified copies free of charge, together with the licence</li></ul>",
+  "zh": "<ul><li>个人、家庭使用</li><li>公司、机构、学校等办公及商业用途（不限台数）</li><li>连同许可证一起免费分发未经修改的原版</li></ul>",
+  "ja": "<ul><li>個人・家庭での使用</li><li>企業・団体・学校などでの業務・商用利用（台数制限なし）</li><li>改変していないオリジナルをライセンスとともに無料で再配布</li></ul>",
+  "fr": "<ul><li>L'utiliser chez vous, à titre personnel</li><li>L'utiliser au travail — entreprises, organisations, écoles, usage commercial (sans limite de Mac)</li><li>Partager gratuitement des copies non modifiées, accompagnées de la licence</li></ul>"
+ },
+ "lic_no_h": {
+  "ko": "유일하게 금지되는 것",
+  "en": "The only thing you can't do",
+  "en-GB": "The only thing you can't do",
+  "zh": "唯一禁止的事项",
+  "ja": "唯一禁止されていること",
+  "fr": "La seule chose interdite"
+ },
+ "lic_no_p": {
+  "ko": "<b>리버스 엔지니어링.</b> 디컴파일·디스어셈블 등으로 소스 코드나 내부 구조를 알아내거나, 실행 파일을 수정·패치하는 것은 허용되지 않습니다. (법이 계약으로 제한할 수 없다고 정한 범위는 예외)",
+  "en": "<b>Reverse engineering.</b> Decompiling, disassembling or otherwise deriving the source code or internals, and modifying or patching the app's binaries, are not allowed (except where the law says this can't be restricted).",
+  "en-GB": "<b>Reverse engineering.</b> Decompiling, disassembling or otherwise deriving the source code or internals, and modifying or patching the app's binaries, are not allowed (except where the law says this can't be restricted).",
+  "zh": "<b>逆向工程。</b>不得通过反编译、反汇编等方式获取源代码或内部结构，也不得修改或修补应用的可执行文件（法律规定不得以合同限制的情形除外）。",
+  "ja": "<b>リバースエンジニアリング。</b>逆コンパイル・逆アセンブルなどでソースコードや内部構造を解析すること、実行ファイルを改変・パッチすることは禁止です（法律で契約による制限ができないと定められた範囲は除きます）。",
+  "fr": "<b>L'ingénierie inverse.</b> Décompiler, désassembler ou chercher à obtenir le code source ou le fonctionnement interne, ainsi que modifier ou patcher les binaires de l'app, n'est pas autorisé (sauf là où la loi interdit de le restreindre)."
+ },
+ "lic_war_h": {
+  "ko": "알아 두세요",
+  "en": "Good to know",
+  "en-GB": "Good to know",
+  "zh": "请注意",
+  "ja": "ご注意",
+  "fr": "À savoir"
+ },
+ "lic_war_p": {
+  "ko": "소프트웨어는 \"있는 그대로\" 제공되며 어떠한 보증도 하지 않습니다. 저작권은 저작자에게 있고, 소스 코드는 공개하지 않습니다. 개인정보는 수집하지 않습니다.",
+  "en": "The software is provided “as is”, without warranty of any kind. Copyright stays with the author, and the source code is not published. No personal data is collected.",
+  "en-GB": "The software is provided ‘as is’, without warranty of any kind. Copyright stays with the author, and the source code is not published. No personal data is collected.",
+  "zh": "本软件按“原样”提供，不作任何保证。版权归作者所有，源代码不公开。不收集任何个人信息。",
+  "ja": "本ソフトウェアは「現状のまま」提供され、いかなる保証もありません。著作権は作者に帰属し、ソースコードは公開していません。個人情報は収集しません。",
+  "fr": "Le logiciel est fourni « tel quel », sans aucune garantie. Les droits d'auteur restent à l'auteur et le code source n'est pas publié. Aucune donnée personnelle n'est collectée."
+ },
+ "lic_link": {
+  "ko": "라이선스 전문 읽기 →",
+  "en": "Read the full license →",
+  "en-GB": "Read the full licence →",
+  "zh": "阅读许可全文 →",
+  "ja": "ライセンス全文を読む →",
+  "fr": "Lire la licence complète →"
  }
 };
+  const LIC_FILE = {"ko": "LICENSE.ko.md", "en": "LICENSE", "en-GB": "LICENSE", "zh": "LICENSE", "ja": "LICENSE", "fr": "LICENSE"};
   const SUPPORTED = ["ko", "en", "en-GB", "zh", "ja", "fr"];
   const HTML_LANG = { en: "en-US", "en-GB": "en-GB", ko: "ko", zh: "zh-Hans", ja: "ja", fr: "fr" };
 
@@ -1053,6 +1161,8 @@
     sel.value = lang;
     sel.setAttribute("aria-label", tr("lang_label"));
     applyRepoLinks();   // translated text may contain new links
+    const licHref = "https://github.com/" + REPO + "/blob/main/" + (LIC_FILE[lang] || "LICENSE");
+    document.querySelectorAll("#lic-link, .lic-foot").forEach(a => a.href = licHref);
     window.__lang = lang;
   }
 

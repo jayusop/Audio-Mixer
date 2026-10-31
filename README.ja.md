@@ -17,6 +17,7 @@
 <p align="center">
   <img alt="macOS 14.2+" src="https://img.shields.io/badge/macOS-14.2%2B-8f7dff">
   <img alt="Apple Silicon / Intel" src="https://img.shields.io/badge/Apple%20Silicon%20%2F%20Intel-supported-ff6fb6">
+  <img alt="個人・企業とも無料" src="https://img.shields.io/badge/license-freeware-3fb950">
   <img alt="Release" src="https://img.shields.io/github/v/release/jayusop/Audio-Mixer?color=5fe1f2">
 </p>
 
@@ -61,6 +62,17 @@
 
 - 許可しない場合、アプリ別音量と EQ は動作せず（音は通常どおり再生されます）、デバイス音量の操作のみ可能です。
 - アプリが再生を始めた直後は、ごく短い間だけ処理前の音が聞こえることがあります。
+
+## ライセンス
+
+Audio Mixer はフリーウェアです — **個人・企業とも完全無料**。料金・登録・ライセンスキーは不要です。
+
+- 個人・家庭はもちろん、企業・団体・学校などでの業務・商用利用も可能です（台数制限なし）。
+- 改変していないオリジナルを、ライセンスとともに無料で再配布できます。
+- **唯一禁止されているのはリバースエンジニアリングです** — 逆コンパイル・逆アセンブル、実行ファイルの改変・パッチは禁止（法律で契約による制限ができないと定められた範囲は除く）。
+- 「現状のまま」提供され、いかなる保証もありません。個人情報は収集しません。
+
+全文: [LICENSE](LICENSE)（英語原文）
 
 ## クレジット & お問い合わせ
 

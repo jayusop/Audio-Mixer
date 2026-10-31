@@ -17,6 +17,7 @@
 <p align="center">
   <img alt="macOS 14.2+" src="https://img.shields.io/badge/macOS-14.2%2B-8f7dff">
   <img alt="Apple Silicon / Intel" src="https://img.shields.io/badge/Apple%20Silicon%20%2F%20Intel-supported-ff6fb6">
+  <img alt="Gratuit pour les particuliers et les entreprises" src="https://img.shields.io/badge/license-freeware-3fb950">
   <img alt="Release" src="https://img.shields.io/github/v/release/jayusop/Audio-Mixer?color=5fe1f2">
 </p>
 
@@ -61,6 +62,17 @@ Une app macOS qui vit dans la barre des menus et offre un **volume par app**, le
 
 - Si vous refusez l'autorisation, le volume par app et l'EQ ne fonctionnent pas (le son est lu normalement) ; seul le volume des périphériques est réglable.
 - Juste après le début de la lecture d'une app, un très court instant de son non traité peut être audible.
+
+## Licence
+
+Audio Mixer est un logiciel gratuit — **entièrement gratuit pour les particuliers et les entreprises**. Sans frais, sans inscription, sans clé de licence.
+
+- Utilisez-le chez vous ou au travail — entreprises, organisations, écoles, usage commercial (sans limite de Mac).
+- Partagez gratuitement des copies non modifiées, accompagnées de la licence.
+- **La seule chose interdite est l'ingénierie inverse** — pas de décompilation, de désassemblage, ni de modification ou de patch des binaires (sauf là où la loi interdit de le restreindre).
+- Fourni « tel quel », sans aucune garantie. Aucune donnée personnelle n'est collectée.
+
+Texte intégral : [LICENSE](LICENSE) (original en anglais)
 
 ## Crédits et contact
 

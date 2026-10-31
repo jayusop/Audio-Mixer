@@ -17,6 +17,7 @@
 <p align="center">
   <img alt="macOS 14.2+" src="https://img.shields.io/badge/macOS-14.2%2B-8f7dff">
   <img alt="Apple Silicon / Intel" src="https://img.shields.io/badge/Apple%20Silicon%20%2F%20Intel-supported-ff6fb6">
+  <img alt="개인·기업 모두 무료" src="https://img.shields.io/badge/license-freeware-3fb950">
   <img alt="Release" src="https://img.shields.io/github/v/release/jayusop/Audio-Mixer?color=5fe1f2">
 </p>
 
@@ -61,6 +62,17 @@
 
 - 권한을 거부하면 앱별 볼륨·EQ는 동작하지 않으며(소리는 정상 재생), 장치 볼륨 제어만 가능합니다.
 - 앱이 재생을 시작한 직후 아주 짧은 순간은 처리 전 소리가 날 수 있습니다.
+
+## 라이선스
+
+**개인·기업 모두 완전 무료**인 프리웨어입니다. 요금, 등록, 라이선스 키가 필요 없습니다.
+
+- 개인·가정은 물론 회사·기관·학교 등 업무용·상업적 사용 모두 가능합니다 (대수 제한 없음).
+- 수정하지 않은 원본을 라이선스와 함께 무료로 재배포할 수 있습니다.
+- **유일하게 금지되는 것은 리버스 엔지니어링입니다** — 디컴파일·디스어셈블, 실행 파일 수정·패치 금지 (법이 계약으로 제한할 수 없다고 정한 범위는 예외).
+- "있는 그대로" 제공되며 어떠한 보증도 하지 않습니다. 개인정보를 수집하지 않습니다.
+
+전문: [LICENSE](LICENSE) (영어 원문) · [LICENSE.ko.md](LICENSE.ko.md) (한국어 번역)
 
 ## 크레딧 & 문의
 

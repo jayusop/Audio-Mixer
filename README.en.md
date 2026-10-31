@@ -17,6 +17,7 @@
 <p align="center">
   <img alt="macOS 14.2+" src="https://img.shields.io/badge/macOS-14.2%2B-8f7dff">
   <img alt="Apple Silicon / Intel" src="https://img.shields.io/badge/Apple%20Silicon%20%2F%20Intel-supported-ff6fb6">
+  <img alt="Free for personal & business use" src="https://img.shields.io/badge/license-freeware-3fb950">
   <img alt="Release" src="https://img.shields.io/github/v/release/jayusop/Audio-Mixer?color=5fe1f2">
 </p>
 
@@ -61,6 +62,17 @@ A macOS app that lives in the menu bar and gives you **per-app volume**, **input
 
 - If you deny permission, per-app volume and EQ won't work (sound still plays normally); only device volume control is available.
 - Right after an app starts playback there may be a very brief moment of unprocessed sound.
+
+## License
+
+Audio Mixer is freeware — **completely free for individuals and businesses**. No fee, no registration, no license key.
+
+- Use it at home or at work — companies, organizations, schools, commercial use (any number of Macs).
+- Share unmodified copies free of charge, together with the license.
+- **The only thing not allowed is reverse engineering** — no decompiling, disassembling, or modifying/patching the binaries (except where the law says this can't be restricted).
+- Provided “as is”, without warranty of any kind. No personal data is collected.
+
+Full text: [LICENSE](LICENSE)
 
 ## Credits & Contact
 
